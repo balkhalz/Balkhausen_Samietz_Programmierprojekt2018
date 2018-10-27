@@ -2,9 +2,12 @@ package main;
 
 import data.Data;
 
-public class Main {
+public class Main extends Thread {
 
 	public static void main(String[] args) {
-		Data.initializeArrays();
+		Data.initialize();
+		Data.readData();
+		Data.writeData();
+		Data.printData();
 	}
 }

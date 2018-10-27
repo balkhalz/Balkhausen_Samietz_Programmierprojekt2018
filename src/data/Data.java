@@ -1,84 +1,101 @@
 package data;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Data {
 
-	private static int nodeAmount, edgeAmount;
-
-	private static int[][] nodeArray;
-	private static int[][] edgeArray;
-	private static File sourceFile = new File("src/stgtregbz.fmi");
-	private static FileInputStream inputStream;
+	private static File sourceFile;
 	private static Scanner scanner;
+	private static int nodeAmount, edgeAmount, nodeAndEdgeAmount, writeIndicator, iterator;
+	// private static String[] tempStringArray;
 
-	public static void initializeArrays() {
+	private static ArrayList<String[]> dataList;
+	private static String[][] nodeArray;
+	private static int[][] edgeArray;
 
+	public static void initialize() {
 		try {
-			inputStream = new FileInputStream(sourceFile.getAbsolutePath());
-			scanner = new Scanner(inputStream);
-			// System.out.println(sourceFile.getAbsolutePath());
-
-			skipScannerTokens(16);
+			readFilePath();
+			scanner = new Scanner(new BufferedReader(new FileReader(sourceFile.getAbsolutePath())));
+			scannerSkipLines(4, scanner);
 			nodeAmount = scanner.nextInt();
 			edgeAmount = scanner.nextInt();
+			nodeAndEdgeAmount = nodeAmount + edgeAmount;
+			scanner.nextLine();
 			// System.out.println(nodeAmount + "\n" + edgeAmount);
 
-			nodeArray = new int[nodeAmount][5];
-			edgeArray = new int[edgeAmount][4];
+			nodeArray = new String[nodeAmount][2];
+			edgeArray = new int[edgeAmount][3];
 
-			initializeNodeArray(nodeAmount);
-			System.out.println("Nodes Finished!");
+			dataList = new ArrayList<String[]>(nodeAndEdgeAmount);
 
-			initializeEdgeArray(edgeAmount);
-			System.out.println("Edges Finished!");
-
-			inputStream.close();
-		} catch (IOException e) {
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void initializeNodeArray(int nodeAmount) {
+	public static void readFilePath() {
+		sourceFile = new File("src/stgtregbz.fmi");
+	}
+
+	public static void readData() {
+		writeIndicator = -1;
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
-			nodeArray[ctr][0] = scanner.nextInt();
-			skipScannerTokens(1);
-			Double tempDouble = scanner.nextDouble();
-			nodeArray[ctr][1] = tempDouble.intValue();
-			nodeArray[ctr][2] = (int) ((tempDouble - tempDouble.intValue()) * 100000000);
-			tempDouble = scanner.nextDouble();
-			nodeArray[ctr][3] = tempDouble.intValue();
-			nodeArray[ctr][4] = (int) ((tempDouble - tempDouble.intValue()) * 100000000);
-			skipScannerTokens(1);
-
-			/*
-			 * System.out.println(nodeArray[ctr][0] + " " + nodeArray[ctr][1] + " " +
-			 * nodeArray[ctr][2] + " " + nodeArray[ctr][3] + " " + nodeArray[ctr][4]);
-			 */
+			dataList.add(scanner.nextLine().split(" "));
+			writeIndicator++;
 		}
-	}
+		System.out.println("reading nodes finished");
 
-	private static void initializeEdgeArray(int edgeAmount) {
 		for (int ctr = 0; ctr < edgeAmount; ctr++) {
-			edgeArray[ctr][0] = scanner.nextInt(); // unique startNode ID
-			edgeArray[ctr][1] = scanner.nextInt(); // unique endNode ID
-			edgeArray[ctr][2] = scanner.nextInt(); // edge weight
-			edgeArray[ctr][3] = ctr; // unique edge ID
-			skipScannerTokens(2);
+			dataList.add(writeIndicator, scanner.nextLine().split(" "));
+			writeIndicator++;
+		}
+		System.out.println("reading edges finished");
+		System.out.println(writeIndicator);
 
-			/*
-			 * System.out.println( edgeArray[ctr][0] + " " + nodeArray[ctr][1] + " " +
-			 * edgeArray[ctr][2] + " " + edgeArray[ctr][3]);
-			 */
+	}
+
+	/**
+	 * This method is used to write the data from the created List to usable Arrays.
+	 * It is designed to function multithreaded, so it never goes turns out ahead of
+	 * the fileReader.
+	 */
+	public static void writeData() {
+		iterator = 0;
+		for (int ctr = 0; ctr < nodeAmount; ctr++) {
+			while (iterator < dataList.size() || dataList.size() == nodeAndEdgeAmount) {
+				nodeArray[ctr][0] = dataList.get(iterator)[2];
+				nodeArray[ctr][1] = dataList.get(iterator)[3];
+				iterator++;
+				break;
+			}
+		}
+		for (int ctr = 0; ctr < edgeAmount; ctr++) {
+			while (iterator < dataList.size() || dataList.size() == nodeAndEdgeAmount) {
+				edgeArray[ctr][0] = Integer.parseInt(dataList.get(iterator)[0]);
+				edgeArray[ctr][1] = Integer.parseInt(dataList.get(iterator)[1]);
+				edgeArray[ctr][2] = Integer.parseInt(dataList.get(iterator)[2]);
+				iterator++;
+				break;
+			}
+		}
+		System.out.println("writing arrays finished");
+	}
+
+	private static void scannerSkipLines(int skips, Scanner scanner) {
+		for (int ctr = 0; ctr < skips; ctr++) {
+			scanner.nextLine();
 		}
 	}
 
-	private static void skipScannerTokens(int skips) {
-		for (int ctr = 0; ctr < skips; ctr++) {
-			scanner.next();
+	public static void printData() {
+		for (int ctr = 0; ctr < nodeAmount; ctr++) {
+			System.out.println(nodeArray[ctr][0] + " " + nodeArray[ctr][1]);
 		}
 	}
 }
