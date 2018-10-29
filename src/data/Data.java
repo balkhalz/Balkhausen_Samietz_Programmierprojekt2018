@@ -97,4 +97,12 @@ public class Data {
 			scanner.nextLine();
 		}
 	}
+
+	public static void testData() {
+		if (nodeArray[0][0].equals("48.66743380000000485") && nodeArray[0][1].equals("9.24459110000000095")
+				&& nodeArray[1132112][0].equals("48.64209470000000124")
+				&& nodeArray[1132112][1].equals("9.01481120000000047")) {
+			System.out.println("nodeArray setup correctly!");
+		}
+	}
 }

@@ -8,5 +8,6 @@ public class Main extends Thread {
 		Data.initialize();
 		Data.readData();
 		Data.writeData();
+		Data.testData();
 	}
 }
