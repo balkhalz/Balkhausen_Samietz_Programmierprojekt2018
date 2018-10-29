@@ -67,28 +67,27 @@ public class Data {
 	 * fileReader.
 	 */
 	public static void writeData() {
-		String lastNodeWritten = null;
+		String lastNodeIDWritten = "0";
+		int offsetCounter = 0;
 		int nodeCounter = 0;
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
 			nodeArray[ctr][0] = nodeDataList.get(ctr)[2];
 			nodeArray[ctr][1] = nodeDataList.get(ctr)[3];
 		}
-		// System.out.println(nodeArray[nodeArray.length - 1][0] + " " +
-		// nodeArray[nodeArray.length - 1][1]);
 
 		for (int ctr = 0; ctr < edgeAmount; ctr++) {
 			edgeArray[ctr][0] = Integer.parseInt(edgeDataList.get(ctr)[0]);
 			edgeArray[ctr][1] = Integer.parseInt(edgeDataList.get(ctr)[1]);
 			edgeArray[ctr][2] = Integer.parseInt(edgeDataList.get(ctr)[2]);
-			if (edgeDataList.get(ctr)[0].equals(lastNodeWritten) == false) {
-				edgeOffset[nodeCounter] = Integer.parseInt(edgeDataList.get(ctr)[0]);
+			if (edgeDataList.get(ctr)[0].equals(lastNodeIDWritten) == true) {
+				offsetCounter++;
+			} else {
+				lastNodeIDWritten = edgeDataList.get(ctr)[0];
+				edgeOffset[nodeCounter] = ctr;
 				nodeCounter++;
-				lastNodeWritten = edgeDataList.get(ctr)[0];
+				offsetCounter = 0;
 			}
 		}
-		// System.out.println(edgeArray[edgeArray.length - 1][0] + " " +
-		// edgeArray[edgeArray.length - 1][1] + " "
-		// + edgeArray[edgeArray.length - 1][2]);
 		System.out.println("writing arrays finished");
 	}
 
@@ -103,6 +102,14 @@ public class Data {
 				&& nodeArray[1132112][0].equals("48.64209470000000124")
 				&& nodeArray[1132112][1].equals("9.01481120000000047")) {
 			System.out.println("nodeArray setup correctly!");
+		}
+		if (edgeArray[0][0] == 0 && edgeArray[0][1] == 1104366 && edgeArray[0][2] == 55
+				&& edgeArray[2292886][0] == 1132112 && edgeArray[2292886][1] == 1131157
+				&& edgeArray[2292886][2] == 462) {
+			System.out.println("edgeArray setup correctly!");
+		}
+		if (edgeOffset[0] == 0 && edgeOffset[1132122] == 2) {
+			System.out.println("edgeOffsetArray setup correctly!");
 		}
 	}
 }
