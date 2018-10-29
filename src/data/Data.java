@@ -67,9 +67,8 @@ public class Data {
 	 * fileReader.
 	 */
 	public static void writeData() {
-		String lastNodeIDWritten = "0";
-		int offsetCounter = 0;
 		int nodeCounter = 0;
+		edgeOffset[0] = 0;
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
 			nodeArray[ctr][0] = nodeDataList.get(ctr)[2];
 			nodeArray[ctr][1] = nodeDataList.get(ctr)[3];
@@ -79,13 +78,9 @@ public class Data {
 			edgeArray[ctr][0] = Integer.parseInt(edgeDataList.get(ctr)[0]);
 			edgeArray[ctr][1] = Integer.parseInt(edgeDataList.get(ctr)[1]);
 			edgeArray[ctr][2] = Integer.parseInt(edgeDataList.get(ctr)[2]);
-			if (edgeDataList.get(ctr)[0].equals(lastNodeIDWritten) == true) {
-				offsetCounter++;
-			} else {
-				lastNodeIDWritten = edgeDataList.get(ctr)[0];
-				edgeOffset[nodeCounter] = ctr;
+			if (Integer.parseInt(edgeDataList.get(ctr)[0]) != nodeCounter) {
 				nodeCounter++;
-				offsetCounter = 0;
+				edgeOffset[nodeCounter] = ctr;
 			}
 		}
 		System.out.println("writing arrays finished");
@@ -108,7 +103,7 @@ public class Data {
 				&& edgeArray[2292886][2] == 462) {
 			System.out.println("edgeArray setup correctly!");
 		}
-		if (edgeOffset[0] == 0 && edgeOffset[1132122] == 2) {
+		if (edgeOffset[0] == 0 && edgeOffset[1132112] == 2292885) {
 			System.out.println("edgeOffsetArray setup correctly!");
 		}
 	}
