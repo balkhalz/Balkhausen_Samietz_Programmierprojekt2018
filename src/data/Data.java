@@ -11,7 +11,7 @@ public class Data {
 
 	private static File sourceFile;
 	private static Scanner scanner;
-	private static int nodeAmount, edgeAmount, readIndicator;
+	private static int nodeAmount, edgeAmount, nodeAndEdgeAmount, readIndicator;
 	// private static String[] tempStringArray;
 
 	private static int[] edgeOffset;
@@ -21,11 +21,11 @@ public class Data {
 
 	public static void initialize() {
 		try {
-			readFilePath();
-			scanner = new Scanner(new BufferedReader(new FileReader(sourceFile.getAbsolutePath())));
+			scanner = new Scanner(new BufferedReader(new FileReader(readFilePath().getAbsolutePath())));
 			scannerSkipLines(4, scanner);
 			nodeAmount = scanner.nextInt();
 			edgeAmount = scanner.nextInt();
+			nodeAndEdgeAmount = nodeAmount + edgeAmount;
 			scanner.nextLine();
 			// System.out.println(nodeAmount + "\n" + edgeAmount);
 
@@ -41,8 +41,8 @@ public class Data {
 		}
 	}
 
-	public static void readFilePath() {
-		sourceFile = new File("src/stgtregbz.fmi");
+	public static File readFilePath() {
+		return new File("src/stgtregbz.fmi");
 	}
 
 	public static void readData() {
@@ -70,17 +70,23 @@ public class Data {
 		int nodeCounter = 0;
 		edgeOffset[0] = 0;
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
-			nodeArray[ctr][0] = nodeDataList.get(ctr)[2];
-			nodeArray[ctr][1] = nodeDataList.get(ctr)[3];
+			while (readIndicator == nodeAndEdgeAmount || readIndicator >= ctr + 10) {
+				nodeArray[ctr][0] = nodeDataList.get(ctr)[2];
+				nodeArray[ctr][1] = nodeDataList.get(ctr)[3];
+				break;
+			}
 		}
 
 		for (int ctr = 0; ctr < edgeAmount; ctr++) {
-			edgeArray[ctr][0] = Integer.parseInt(edgeDataList.get(ctr)[0]);
-			edgeArray[ctr][1] = Integer.parseInt(edgeDataList.get(ctr)[1]);
-			edgeArray[ctr][2] = Integer.parseInt(edgeDataList.get(ctr)[2]);
-			if (Integer.parseInt(edgeDataList.get(ctr)[0]) != nodeCounter) {
-				nodeCounter++;
-				edgeOffset[nodeCounter] = ctr;
+			while (readIndicator == nodeAndEdgeAmount || readIndicator >= ctr + 10 + nodeAmount) {
+				edgeArray[ctr][0] = Integer.parseInt(edgeDataList.get(ctr)[0]);
+				edgeArray[ctr][1] = Integer.parseInt(edgeDataList.get(ctr)[1]);
+				edgeArray[ctr][2] = Integer.parseInt(edgeDataList.get(ctr)[2]);
+				if (Integer.parseInt(edgeDataList.get(ctr)[0]) != nodeCounter) {
+					nodeCounter++;
+					edgeOffset[nodeCounter] = ctr;
+				}
+				break;
 			}
 		}
 		System.out.println("writing arrays finished");
