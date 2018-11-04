@@ -9,11 +9,10 @@ import java.util.Scanner;
 
 public class Data {
 
-	private static File sourceFile;
+	private static boolean readNodes, readEdges;
 	private static Scanner scanner;
-	private static int nodeAmount, edgeAmount, nodeAndEdgeAmount, readIndicator;
+	private static int nodeAmount, edgeAmount;
 	// private static String[] tempStringArray;
-
 	private static int[] edgeOffset;
 	private static ArrayList<String[]> nodeDataList, edgeDataList;
 	private static String[][] nodeArray;
@@ -25,10 +24,8 @@ public class Data {
 			scannerSkipLines(4, scanner);
 			nodeAmount = scanner.nextInt();
 			edgeAmount = scanner.nextInt();
-			nodeAndEdgeAmount = nodeAmount + edgeAmount;
 			scanner.nextLine();
 			// System.out.println(nodeAmount + "\n" + edgeAmount);
-
 			edgeOffset = new int[nodeAmount];
 			nodeArray = new String[nodeAmount][3];
 			edgeArray = new int[edgeAmount][3];
@@ -46,17 +43,18 @@ public class Data {
 	}
 
 	public static void readData() {
-		readIndicator = 0;
+		readNodes = false;
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
 			nodeDataList.add(ctr, scanner.nextLine().split(" "));
-			readIndicator++;
 		}
+		readNodes = true;
 		System.out.println("reading nodes finished");
 
+		readEdges = false;
 		for (int ctr = 0; ctr < edgeAmount; ctr++) {
 			edgeDataList.add(ctr, scanner.nextLine().split(" "));
-			readIndicator++;
 		}
+		readEdges = true;
 		System.out.println("reading edges finished");
 
 	}
@@ -69,24 +67,23 @@ public class Data {
 	public static void writeData() {
 		int nodeCounter = 0;
 		edgeOffset[0] = 0;
+		while (readNodes = false) {
+		}
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
-			while (readIndicator == nodeAndEdgeAmount || readIndicator >= ctr + 10) {
-				nodeArray[ctr][0] = nodeDataList.get(ctr)[2];
-				nodeArray[ctr][1] = nodeDataList.get(ctr)[3];
-				break;
-			}
+			nodeArray[ctr][0] = nodeDataList.get(ctr)[2];
+			nodeArray[ctr][1] = nodeDataList.get(ctr)[3];
 		}
 
+		while (readEdges = false) {
+
+		}
 		for (int ctr = 0; ctr < edgeAmount; ctr++) {
-			while (readIndicator == nodeAndEdgeAmount || readIndicator >= ctr + 10 + nodeAmount) {
-				edgeArray[ctr][0] = Integer.parseInt(edgeDataList.get(ctr)[0]);
-				edgeArray[ctr][1] = Integer.parseInt(edgeDataList.get(ctr)[1]);
-				edgeArray[ctr][2] = Integer.parseInt(edgeDataList.get(ctr)[2]);
-				if (Integer.parseInt(edgeDataList.get(ctr)[0]) != nodeCounter) {
-					nodeCounter++;
-					edgeOffset[nodeCounter] = ctr;
-				}
-				break;
+			edgeArray[ctr][0] = Integer.parseInt(edgeDataList.get(ctr)[0]);
+			edgeArray[ctr][1] = Integer.parseInt(edgeDataList.get(ctr)[1]);
+			edgeArray[ctr][2] = Integer.parseInt(edgeDataList.get(ctr)[2]);
+			if (Integer.parseInt(edgeDataList.get(ctr)[0]) != nodeCounter) {
+				nodeCounter++;
+				edgeOffset[nodeCounter] = ctr;
 			}
 		}
 		System.out.println("writing arrays finished");

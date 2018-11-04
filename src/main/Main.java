@@ -15,17 +15,14 @@ class RunReadData extends Thread {
 }
 
 public class Main extends Thread {
-
 	public static void main(String[] args) {
-
 		RunReadData readData = new RunReadData();
 		RunReadData writeData = new RunReadData();
-
 		Data.initialize();
-		// readData.run("readData");
-		// writeData.run("writeData");
-		Data.readData();
-		Data.writeData();
+		readData.run("readData");
+		writeData.run("writeData");
+		// Data.readData();
+		// Data.writeData();
 		Data.testData();
 	}
 }
