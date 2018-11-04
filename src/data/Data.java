@@ -12,7 +12,7 @@ public class Data {
 	private static boolean readNodes, readEdges;
 	private static Scanner scanner;
 	private static int nodeAmount, edgeAmount;
-	// private static String[] tempStringArray;
+
 	private static int[] edgeOffset;
 	private static ArrayList<String[]> nodeDataList, edgeDataList;
 	private static String[][] nodeArray;
@@ -93,6 +93,10 @@ public class Data {
 		for (int ctr = 0; ctr < skips; ctr++) {
 			scanner.nextLine();
 		}
+	}
+
+	public static int[] getEdgeOffset() {
+		return edgeOffset;
 	}
 
 	public static void testData() {
