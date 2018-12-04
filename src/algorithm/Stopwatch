@@ -1,0 +1,20 @@
+package algorithm;
+
+public class Stopwatch {
+	
+	private static long lastTime, thisTime, delta;
+	private static int ctr;
+
+	public static void stamp() {
+		lastTime = thisTime;
+		thisTime = System.currentTimeMillis();
+		
+		delta = (thisTime - lastTime);
+		
+		if (delta > 1800000)
+			delta = 0;
+		
+		System.out.println("Stamp #" + ctr + ": " + (delta / 1000) + "s since last Stamp " + delta );
+		ctr++;
+	}
+}
