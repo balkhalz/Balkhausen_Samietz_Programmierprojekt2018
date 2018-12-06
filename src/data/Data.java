@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Scanner;
 
 import utility.Utility;
@@ -15,7 +15,7 @@ public class Data {
 	private static File sourceFile;
 	private static Scanner scanner;
 	
-	private ArrayList<String[]> tempNodeData, tempEdgeData;
+	//private ArrayList<String[]> tempNodeData, tempEdgeData;
 
 	public static int[] nodeOffset; // length of nodeAmount
 	public static double[] xLatitude, yLatitude; // length of nodeAmount, sorted by unique nodeID by array index

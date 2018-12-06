@@ -1,7 +1,5 @@
 package algorithm;
 
-import data.Data;
-
 public class Dijkstra {
 	private static int [] edgeOffset;
 	private static int [][] edgeArray;
@@ -15,8 +13,8 @@ public class Dijkstra {
 
 	public static int[] calculatePathBetween(int source, int target) {
 		
-		edgeOffset = Data.getEdgeOffset();
-		edgeArray = Data.getEdgeArray();
+		//edgeOffset = Data.getEdgeOffset();
+		//edgeArray = Data.getEdgeArray();
 
 		prioArrayLength = edgeOffset.length;
 		prioArray = new int [prioArrayLength];
