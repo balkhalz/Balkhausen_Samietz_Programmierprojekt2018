@@ -1,6 +1,9 @@
 package data;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,7 +12,8 @@ import utility.Utility;
 public class Data {
 
 	private static int nodeAmount, edgeAmount;
-	private static BufferedReader reader;
+	private static File sourceFile;
+	private static Scanner scanner;
 	
 	private ArrayList<String[]> tempNodeData, tempEdgeData;
 
@@ -24,7 +28,7 @@ public class Data {
 	 * @return
 	 */
 	private static File readFilePath() {
-		File sourceFile = new File("src/stgtregbz.fmi");
+		sourceFile = new File("src/stgtregbz.fmi");
 		return sourceFile;
 	}
 
@@ -41,24 +45,19 @@ public class Data {
 		}
 	}
 
-	private static void readerSkipLines(int skips, BufferedReader reader) throws IOException {
-		for (int ctr = 0; ctr < skips; ctr++) {
-			reader.readLine();
-		}
-	}
-
-	public static void initialize() throws IOException {
-		// initializing the reader
-
+	public static void initialize() {
+		// initializing the scanner
 		try {
-			reader = new BufferedReader(new FileReader(readFilePath().getAbsolutePath()));
+			scanner = new Scanner(new BufferedReader(new FileReader(readFilePath().getAbsolutePath())));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		// utilizing the reader, the amount of nodes + edges are read
-		readerSkipLines(4,reader);
-		nodeAmount = Integer.parseInt(reader.readLine());
-		edgeAmount = Integer.parseInt(reader.readLine());
+
+		// utilizing the scanner, the amount of nodes + edges are read
+		scannerSkipLines(4, scanner);
+		nodeAmount = scanner.nextInt();
+		edgeAmount = scanner.nextInt();
+		scanner.nextLine();
 
 		// initializing the arrays to be used with the amount of nodes and edges
 		nodeOffset = new int[nodeAmount];
@@ -73,7 +72,7 @@ public class Data {
 		// System.out.println(nodeAmount + " " + edgeAmount);
 	}
 
-	public static void readAndWrite() throws IOException {
+	public static void readAndWrite() {
 		Utility.startTimer();
 		readNodes();
 		readEdges();
@@ -84,10 +83,10 @@ public class Data {
 	/**
 	 * This method extrapolates all node data needed to run the dijkstra algorithm.
 	 */
-	private static void readNodes() throws IOException {
+	private static void readNodes() {
 		String[] tempArray = null;
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
-			tempArray = reader.readLine().split(" ");
+			tempArray = scanner.nextLine().split(" ");
 			xLatitude[ctr] = Double.parseDouble(tempArray[2]);
 			yLatitude[ctr] = Double.parseDouble(tempArray[3]);
 		}
@@ -97,10 +96,10 @@ public class Data {
 	/**
 	 * This method extrapolates all edge data needed to run the dijkstra algorithm.
 	 */
-	private static void readEdges() throws IOException {
+	private static void readEdges() {
 		String[] tempArray = null;
 		for (int ctr = 0; ctr < edgeAmount; ctr++) {
-			tempArray = reader.readLine().split(" ");
+			tempArray = scanner.nextLine().split(" ");
 			startNodeID[ctr] = Integer.parseInt(tempArray[0]);
 			endNodeID[ctr] = Integer.parseInt(tempArray[1]);
 			edgeValue[ctr] = Integer.parseInt(tempArray[2]);
