@@ -1,122 +1,230 @@
 package algorithm;
 
+import data.Data;
+
 public class Dijkstra {
-	private static int [] edgeOffset;
-	private static int [][] edgeArray;
 	
-	private static int prioArrayLength;
-	private static int [] prioArray, path;
-	private static int [][] nodeArray;
+	private static int pivotSource;
 	
-	private static int tOffset, mCtr;
-	private static int [] tNode, tEdge;
+	private static int[] edgeOffset, endNodeID, edgeValue;
+	
+	private static int amountOfEdges, amountOfNodes;
+	
+	private static int nodesToVisit;	//	repräsentiert die unbehandelten nodes
+	private static int[] priorityQueue;	//	enthält Verweise auf distanceArray
+	private static int[] distanceArray;	//	enthält Abstände von sourceNode zu entsprechender Node
 
-	public static int[] calculatePathBetween(int source, int target) {
+	/**
+	 * calculates the distance from the source to the target
+	 * 
+	 * @param source
+	 * @param target
+	 * @return distance from source to target
+	 */
+	public static int setSourceAndTarget(int source, int target) {
 		
-		//edgeOffset = Data.getEdgeOffset();
-		//edgeArray = Data.getEdgeArray();
+		edgeOffset = Data.getOffsetArray();
+		endNodeID = Data.getEndNodeIDArray();
+		edgeValue = Data.getedgeValueArray();
+		
+		amountOfNodes = edgeOffset.length;
+		amountOfEdges = endNodeID.length;
+		
+		nodesToVisit = amountOfNodes;
 
-		prioArrayLength = edgeOffset.length;
-		prioArray = new int [prioArrayLength];
-		nodeArray = new int [edgeOffset.length][3];
-
-		for (int ctr = 0; ctr < edgeOffset.length; ctr++) {
-			prioArray [ctr] = ctr;
-			nodeArray [ctr][0] = ctr;
-			nodeArray [ctr][1] = Integer.MAX_VALUE;
-			nodeArray [ctr][2] = -1;
+		priorityQueue = new int[amountOfNodes];
+		distanceArray = new int[amountOfEdges];
+		
+		for (int ctr = 0; ctr < amountOfNodes; ctr++) {
+			priorityQueue[ctr] = ctr;
+			distanceArray[ctr] = Integer.MAX_VALUE;
 		}
-	
-		prioArray[source] = 0;
-		prioArray[0] = source;
-		nodeArray [source][1] = 0;
-	
-	while (true) {
 		
-		tOffset = edgeOffset[prioArray[0]];
-		mCtr = 0;
+		priorityQueue[source] = 0;
+		priorityQueue[0] = source;
+		distanceArray[source] = 0;
 		
-		while (tOffset + mCtr < edgeArray.length && edgeArray[tOffset + mCtr][0] == prioArray[0]) {
-
-			tNode = nodeArray[prioArray[0]];
-			tEdge = edgeArray[tOffset + mCtr];
-
-			if (nodeArray[tEdge[1]][1] > tNode[1] + tEdge[2]) {
-				nodeArray[tEdge[1]][1] = tNode[1] + tEdge[2];
-				nodeArray[tEdge[1]][2] = prioArray[0];
+		
+		
+		while (true) {
+			int tempNode = priorityQueue[0];
+			int tempDist = distanceArray[tempNode];
+			
+			
+			// Aus Node zeigende Edges werden mit edgeOffset[Node] und edgeOffset[Node + 1] ermittelt
+			int b = edgeOffset[tempNode];
+			int n;
+			
+			// da edgeOffset[Node + 1] eine Exception wefen kann, wird hier nachgefragt
+			if (amountOfNodes == tempNode + 1)
+				n = amountOfEdges;
+			else
+				n = edgeOffset[tempNode + 1];
+			
+			// Für alle neu erreichbaren Nodes y gilt:
+			for (int ctr = b; ctr < n; ctr++) {
+				/* Falls die Länge des neu entdeckten Pfads zur Node y kürzer ist,
+				 * als die vorhandene Distanz zu y, wird der neue Wert übernommen.
+				 */
+				if (tempDist + edgeValue[ctr] < distanceArray[endNodeID[ctr]])
+					distanceArray[endNodeID[ctr]] = tempDist + edgeValue[ctr];
 			}
-			mCtr++;
+			
+			// eine Node wurde abgehandelt, deswegen wird nodesToVisit dekrementiert
+			nodesToVisit--;
+			
+			/* da nur die ersten n = nodesToVisit Nodes der priorityQueue einer Relevanz haben,
+			 * wird die abgehandelte Node ersetzt
+			 */
+			priorityQueue[0] = priorityQueue[nodesToVisit];
+			
+			// die Node mit der kürzesten Distanz, die noch nicht abgehandelt wurde wird and prioQueue[0] gesetzt
+			minHeapSort();
+			
+			/* falls keine kürzerer Distanz mehr möglich ist, d.h. distanz[target] < distanz[nächster Node],
+			 * wir die Distanz zurückgegeben
+			 */
+			if (distanceArray[target] < distanceArray[priorityQueue[0]])
+				return distanceArray[target];
 		}
+	}
 
-		prioArray[0] = prioArray[prioArrayLength - 1];
-		prioArrayLength--;
-		
-		if (prioArrayLength == 0)
-			break;
-		
-		sortPrioList();
-		
-		if (nodeArray[target][1] <= nodeArray[prioArray[0]][1])
-			break;
+	/**
+	 * Sets a pivot source for other methods
+	 * 
+	 * @param sourceToSet
+	 */
+	public static void setPivotSource(int sourceToSet) {
+		pivotSource = sourceToSet;
 	}
 	
-	tNode = nodeArray [target];
-	mCtr = 0;
-	
-	while (tNode [2] != -1) {
-		tNode = nodeArray [tNode [2]];
-		mCtr++;
+	/**
+	 * calculates the distance from the pivot source to the given target
+	 * 
+	 * @param target
+	 * @return distance between pivotSource to target
+	 */
+	public static int fromPivotSourceToTarget(int target) {
+		return setSourceAndTarget(pivotSource, target);
 	}
-	
-	path = new int [mCtr + 1];
-	tNode = nodeArray [target];
 
-	while (mCtr != 0) {
-		path [mCtr] = tNode [0];
-		tNode = nodeArray [tNode [2]];
-		mCtr--;
-	}
 	
-	path [0] = source;
-	
-	return path;
-}
+	/**
+	 * calculates the distance from the pivot source to multiple targets
+	 * 
+	 * @param targets
+	 * @return distance between pivotSource to multiple targets
+	 */
+	public static int[] fromPivotSourceToTargets(int[] targets) {
+		
+		boolean finished = false;
+		
+		edgeOffset = Data.getOffsetArray();
+		endNodeID = Data.getEndNodeIDArray();
+		edgeValue = Data.getedgeValueArray();
+		
+		amountOfNodes = edgeOffset.length;
+		amountOfEdges = endNodeID.length;
+		
+		nodesToVisit = amountOfNodes;
 
-public static void sortPrioList() {
-	
-	int tempInt;
-
-	for (int ctr = prioArrayLength / 2; ctr >= 0; ctr--) {
-
-		if (ctr * 2 + 1 < prioArrayLength) {
-			if (nodeArray[prioArray[ctr]][1] > nodeArray[prioArray[ctr * 2 + 1]][1]) {
-				tempInt = prioArray[ctr];
-				prioArray[ctr] = prioArray[ctr * 2 + 1];
-				prioArray[ctr * 2 + 1] = tempInt;
-				ctr = ctr * 2 + 1;
+		priorityQueue = new int[amountOfNodes];
+		distanceArray = new int[amountOfEdges];
+		
+		for (int ctr = 0; ctr < amountOfNodes; ctr++) {
+			priorityQueue[ctr] = ctr;
+			distanceArray[ctr] = Integer.MAX_VALUE;
+		}
+		
+		priorityQueue[pivotSource] = 0;
+		priorityQueue[0] = pivotSource;
+		distanceArray[pivotSource] = 0;
+		
+		while (true) {
+			int tempNode = priorityQueue[0];
+			int tempDist = distanceArray[tempNode];
+			int b = edgeOffset[tempNode];
+			int n;
+			
+			if (amountOfNodes == tempNode + 1)
+				n = amountOfEdges;
+			else
+				n = edgeOffset[tempNode + 1];
+			
+			for (int ctr = b; ctr < n; ctr++) {
+				if (distanceArray[endNodeID[ctr]] > tempDist + edgeValue[ctr]) {
+					distanceArray[endNodeID[ctr]] = tempDist + edgeValue[ctr];
+				}
+			}
+			
+			nodesToVisit--;
+			priorityQueue[0] = priorityQueue[nodesToVisit];
+			
+			minHeapSort();
+			
+			finished = true;
+			
+			for (int target : targets) {
+				if (distanceArray[target] < distanceArray[priorityQueue[0]]) {
+					finished = false;
+					break;
+				}
+			}
+			if (finished) {
+				for (int ctr = 0; ctr < targets.length; ctr++)
+					targets[ctr] = distanceArray[targets[ctr]];
+				return targets;
 			}
 		}
+	}
+		
+	/**
+	 * minHeap sortierer
+	 * 
+	 * sortiert die ersten n = nodesToVisit nodes der PrioQueue anhand der Länge
+	 * x = distanceArray[prioQueue[i]] von der Node i
+	 * 
+	 */
+	private static void minHeapSort() {
+		
+		// bei erstem durchlauf arrayOutOfBounds möglich, deswegen seperater durchlauf mit extra if-Abfrage
+		
+		int firstParentNode = nodesToVisit / 2;
+		int childNode = firstParentNode * 2 + 2;
+		int parentPointer = priorityQueue[firstParentNode];
 
-		if (ctr * 2 + 2 < prioArrayLength) {
-			if (nodeArray[prioArray[ctr]][1] > nodeArray[prioArray[ctr * 2 + 2]][1]) {
-				tempInt = prioArray[ctr];
-				prioArray[ctr] = prioArray[ctr * 2 + 2];
-				prioArray[ctr * 2 + 2] = tempInt;
-				ctr = ctr * 2 + 2;
+		if (childNode < nodesToVisit && distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
+			priorityQueue[firstParentNode] = priorityQueue[childNode];
+			priorityQueue[childNode] = parentPointer;
+			parentPointer = priorityQueue[firstParentNode];
+		}
+		
+		childNode--;
+
+		if (childNode < nodesToVisit && distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
+			priorityQueue[firstParentNode] = priorityQueue[childNode];
+			priorityQueue[childNode] = parentPointer;
+		}
+		
+		
+		
+		for (int parentNode = firstParentNode - 1; parentNode >= 0; parentNode--) {
+			childNode--;
+			parentPointer = priorityQueue[parentNode];
+
+			if (distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
+				priorityQueue[parentNode] = priorityQueue[childNode];
+				priorityQueue[childNode] = parentPointer;
+				parentPointer = priorityQueue[parentNode];
+			}
+			
+			childNode--;
+
+			if (distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
+				priorityQueue[parentNode] = priorityQueue[childNode];
+				priorityQueue[childNode] = parentPointer;
 			}
 		}
 	}
-}
 
-	public static void testData() {
-		int[] path = Dijkstra.calculatePathBetween(15, 16);
-		
-		if (path[0] == 15 && path[1] == 16)
-			System.out.println("pathfinder 1 worked correctly!");
-		
-		path = Dijkstra.calculatePathBetween(51, 969967);
-		
-		if (path[0] == 51 && path[1] == 52 && path[2] == 969967)
-			System.out.println("pathfinder 2 worked correctly!");
-	}
 }
