@@ -4,21 +4,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-//import java.util.ArrayList;
-import java.util.Scanner;
-
 import utility.Utility;
 
 public class Data {
 
 	private static int nodeAmount, edgeAmount;
 	private static File sourceFile;
-	private static Scanner scanner;
-	
-	//private ArrayList<String[]> tempNodeData, tempEdgeData;
+	private static BufferedReader reader;
 
 	public static int[] nodeOffset; // length of nodeAmount
 	public static double[] xLatitude, yLatitude; // length of nodeAmount, sorted by unique nodeID by array index
+	
 	public static int[] startNodeID, endNodeID, edgeValue; // length of edgeAmount, sorted by unique edgeID as array
 															// index
 
@@ -39,25 +35,31 @@ public class Data {
 	 * @param skips
 	 * @param scanner
 	 */
-	private static void scannerSkipLines(int skips, Scanner scanner) {
-		for (int ctr = 0; ctr < skips; ctr++) {
-			scanner.nextLine();
+	private static void skipLines(int skips) {
+		try {
+			for (int ctr = 0; ctr < skips; ctr++) {
+				reader.readLine();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	public static void initialize() {
 		// initializing the scanner
 		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(readFilePath().getAbsolutePath())));
+			reader = new BufferedReader(new FileReader(readFilePath()));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
-		// utilizing the scanner, the amount of nodes + edges are read
-		scannerSkipLines(4, scanner);
-		nodeAmount = scanner.nextInt();
-		edgeAmount = scanner.nextInt();
-		scanner.nextLine();
+		skipLines(5);
+		try {
+			nodeAmount = Integer.parseInt(reader.readLine());
+			edgeAmount = Integer.parseInt(reader.readLine());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// initializing the arrays to be used with the amount of nodes and edges
 		nodeOffset = new int[nodeAmount];
@@ -76,7 +78,6 @@ public class Data {
 		Utility.startTimer();
 		readNodes();
 		readEdges();
-		createOffset();
 		System.out.println("Finished in: " + Utility.endTimer() + " seconds!");
 	}
 
@@ -86,7 +87,13 @@ public class Data {
 	private static void readNodes() {
 		String[] tempArray = null;
 		for (int ctr = 0; ctr < nodeAmount; ctr++) {
-			tempArray = scanner.nextLine().split(" ");
+			
+			try {
+				tempArray = reader.readLine().split(" ");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			xLatitude[ctr] = Double.parseDouble(tempArray[2]);
 			yLatitude[ctr] = Double.parseDouble(tempArray[3]);
 		}
@@ -98,28 +105,28 @@ public class Data {
 	 */
 	private static void readEdges() {
 		String[] tempArray = null;
+		int thisNode = 0;
+		int lastNode = -1;
 		for (int ctr = 0; ctr < edgeAmount; ctr++) {
-			tempArray = scanner.nextLine().split(" ");
-			startNodeID[ctr] = Integer.parseInt(tempArray[0]);
+
+			try {
+				tempArray = reader.readLine().split(" ");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			thisNode = Integer.parseInt(tempArray[0]);
+
+			startNodeID[ctr] = thisNode;
 			endNodeID[ctr] = Integer.parseInt(tempArray[1]);
 			edgeValue[ctr] = Integer.parseInt(tempArray[2]);
+
+			if (thisNode != lastNode)
+				nodeOffset[thisNode] = ctr;
+
+			lastNode = thisNode;
 		}
 		// System.out.println("Reading and writing edges finished");
-	}
-
-	/**
-	 * This method creates the offset-table used for faster access to the
-	 * startNodeIDs.
-	 */
-	private static void createOffset() {
-		int index = -1;
-		for (int i = 0; i < edgeAmount; i++) {
-			if (startNodeID[i] != index) {
-				index = startNodeID[i];
-				nodeOffset[index] = i;
-			}
-		}
-		// System.out.println("Offset created!");
 	}
 
 	public static int[] getOffsetArray() {
@@ -137,4 +144,19 @@ public class Data {
 	public static int[] getedgeValueArray() {
 		return edgeValue;
 	}
+	
+	public static void testData(String map) {
+		if (map.equals("stuttgart")) {
+			if (xLatitude[0] == 48.667433800000005 && yLatitude[0] == 9.244591100000001 && nodeOffset[0] == 0
+					&& xLatitude[nodeAmount - 1] == 48.6420947 && yLatitude[nodeAmount - 1] == 9.0148112
+					&& nodeOffset[nodeAmount - 1] == 2292885) {
+				System.out.println("Nodes setup correctly!");
+			}
+			if (startNodeID[0] == 0 && endNodeID[0] == 1104366 && edgeValue[0] == 55 && startNodeID[edgeAmount - 1] == 1132112
+					&& endNodeID[edgeAmount - 1] == 1131157 && edgeValue[edgeAmount - 1] == 462) {
+				System.out.println("Edges setup correctly!");
+			}
+		}
+	}
+
 }
