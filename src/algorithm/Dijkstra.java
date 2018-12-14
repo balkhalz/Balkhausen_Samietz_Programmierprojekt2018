@@ -10,7 +10,8 @@ public class Dijkstra {
 	
 	private static int amountOfEdges, amountOfNodes;
 	
-	private static int nodesToVisit;	//	repräsentiert die unbehandelten nodes
+	private static boolean[] nodeReachable, minimalDistanceFound;
+	private static int priorityQueueLength;	//	repräsentiert die Lände der priorityQueue
 	private static int[] priorityQueue;	//	enthält Verweise auf distanceArray
 	private static int[] distanceArray;	//	enthält Abstände von sourceNode zu entsprechender Node
 
@@ -25,63 +26,73 @@ public class Dijkstra {
 		
 		edgeOffset = Data.getOffsetArray();
 		endNodeID = Data.getEndNodeIDArray();
-		edgeValue = Data.getedgeValueArray();
+		edgeValue = Data.getEdgeValueArray();
 		
 		amountOfNodes = edgeOffset.length;
 		amountOfEdges = endNodeID.length;
 		
-		nodesToVisit = amountOfNodes;
+		priorityQueueLength = 1;
 
+		nodeReachable = new boolean[amountOfNodes];
+		minimalDistanceFound = new boolean[amountOfNodes];
 		priorityQueue = new int[amountOfNodes];
 		distanceArray = new int[amountOfEdges];
 		
-		for (int ctr = 0; ctr < amountOfNodes; ctr++) {
-			priorityQueue[ctr] = ctr;
+		for (int ctr = 0; ctr < distanceArray.length; ctr++)
 			distanceArray[ctr] = Integer.MAX_VALUE;
-		}
 		
-		priorityQueue[source] = 0;
 		priorityQueue[0] = source;
 		distanceArray[source] = 0;
 		
 		
-		
 		while (true) {
-			int tempNode = priorityQueue[0];
-			int tempDist = distanceArray[tempNode];
 			
+			int closestNode = priorityQueue[0];
+			int tempDist = distanceArray[closestNode];
+			int closestNodeTarget;
+			
+			minimalDistanceFound[closestNode] = true;
 			
 			// Aus Node zeigende Edges werden mit edgeOffset[Node] und edgeOffset[Node + 1] ermittelt
-			int b = edgeOffset[tempNode];
-			int n;
+			int b = edgeOffset[closestNode];
+				int n;
 			
-			// da edgeOffset[Node + 1] eine Exception wefen kann, wird hier nachgefragt
-			if (amountOfNodes == tempNode + 1)
-				n = amountOfEdges;
-			else
-				n = edgeOffset[tempNode + 1];
-			
-			// Für alle neu erreichbaren Nodes y gilt:
-			for (int ctr = b; ctr < n; ctr++) {
-				/* Falls die Länge des neu entdeckten Pfads zur Node y kürzer ist,
-				 * als die vorhandene Distanz zu y, wird der neue Wert übernommen.
-				 */
-				if (tempDist + edgeValue[ctr] < distanceArray[endNodeID[ctr]])
-					distanceArray[endNodeID[ctr]] = tempDist + edgeValue[ctr];
+			// falls b = -1 ist, wurde tempNode eine sackgasse und hat keine Edges, die aus ihr zeigen
+			if (b != -1) {
+				
+				// da edgeOffset[tempNode + 1] eine Exception wefen kann, wird hier nachgefragt
+				if (closestNode + 1 == amountOfNodes)
+					n = amountOfEdges;
+				else
+					n = edgeOffset[closestNode + 1];
+
+				for (int ctr = b; ctr < n; ctr++) {
+					closestNodeTarget = endNodeID[ctr];
+					
+					// verhindert Schleifen
+					if (!minimalDistanceFound[closestNodeTarget])
+						if (distanceArray[closestNodeTarget] > tempDist + edgeValue[ctr]) {
+							distanceArray[closestNodeTarget] = tempDist + edgeValue[ctr];
+							
+							// falls noch nicht in priorityQueue, Aufnahme in diese
+							if (!nodeReachable[closestNodeTarget]) {
+								priorityQueue[priorityQueueLength] = closestNodeTarget;
+								priorityQueueLength++;
+								nodeReachable[closestNodeTarget] = true;
+							}
+						}
+				}
 			}
 			
-			// eine Node wurde abgehandelt, deswegen wird nodesToVisit dekrementiert
-			nodesToVisit--;
-			
-			/* da nur die ersten n = nodesToVisit Nodes der priorityQueue einer Relevanz haben,
-			 * wird die abgehandelte Node ersetzt
-			 */
-			priorityQueue[0] = priorityQueue[nodesToVisit];
+			// eine Node wurde abgehandelt, deswegen wird priorityQueue[0] entfernt
+			priorityQueueLength--;
+			priorityQueue[0] = priorityQueue[priorityQueueLength];
+			nodeReachable[closestNode] = false;
 			
 			// die Node mit der kürzesten Distanz, die noch nicht abgehandelt wurde wird and prioQueue[0] gesetzt
 			minHeapSort();
 			
-			/* falls keine kürzerer Distanz mehr möglich ist, d.h. distanz[target] < distanz[nächster Node],
+			/* falls keine kürzerer Distanz mehr möglich ist, d.h. distanz[target] < distanz[nähster Node],
 			 * wir die Distanz zurückgegeben
 			 */
 			if (distanceArray[target] < distanceArray[priorityQueue[0]])
@@ -121,49 +132,72 @@ public class Dijkstra {
 		
 		edgeOffset = Data.getOffsetArray();
 		endNodeID = Data.getEndNodeIDArray();
-		edgeValue = Data.getedgeValueArray();
+		edgeValue = Data.getEdgeValueArray();
 		
 		amountOfNodes = edgeOffset.length;
 		amountOfEdges = endNodeID.length;
 		
-		nodesToVisit = amountOfNodes;
+		priorityQueueLength = 1;
 
+		nodeReachable = new boolean[amountOfNodes];
+		minimalDistanceFound = new boolean[amountOfNodes];
 		priorityQueue = new int[amountOfNodes];
 		distanceArray = new int[amountOfEdges];
 		
-		for (int ctr = 0; ctr < amountOfNodes; ctr++) {
-			priorityQueue[ctr] = ctr;
+		for (int ctr = 0; ctr < distanceArray.length; ctr++)
 			distanceArray[ctr] = Integer.MAX_VALUE;
-		}
 		
-		priorityQueue[pivotSource] = 0;
 		priorityQueue[0] = pivotSource;
 		distanceArray[pivotSource] = 0;
 		
+		
 		while (true) {
-			int tempNode = priorityQueue[0];
-			int tempDist = distanceArray[tempNode];
-			int b = edgeOffset[tempNode];
-			int n;
 			
-			if (amountOfNodes == tempNode + 1)
-				n = amountOfEdges;
-			else
-				n = edgeOffset[tempNode + 1];
+			int closestNode = priorityQueue[0];
+			int tempDist = distanceArray[closestNode];
+			int closestNodeTarget;
 			
-			for (int ctr = b; ctr < n; ctr++) {
-				if (distanceArray[endNodeID[ctr]] > tempDist + edgeValue[ctr]) {
-					distanceArray[endNodeID[ctr]] = tempDist + edgeValue[ctr];
+			minimalDistanceFound[closestNode] = true;
+			
+			// Aus Node zeigende Edges werden mit edgeOffset[Node] und edgeOffset[Node + 1] ermittelt
+			int b = edgeOffset[closestNode];
+				int n;
+			
+			// falls b = -1 ist, wurde tempNode eine sackgasse und hat keine Edges, die aus ihr zeigen
+			if (b != -1) {
+				
+				// da edgeOffset[tempNode + 1] eine Exception wefen kann, wird hier nachgefragt
+				if (closestNode + 1 == amountOfNodes)
+					n = amountOfEdges;
+				else
+					n = edgeOffset[closestNode + 1];
+
+				for (int ctr = b; ctr < n; ctr++) {
+					closestNodeTarget = endNodeID[ctr];
+					
+					// verhindert Schleifen
+					if (!minimalDistanceFound[closestNodeTarget])
+						if (distanceArray[closestNodeTarget] > tempDist + edgeValue[ctr]) {
+							distanceArray[closestNodeTarget] = tempDist + edgeValue[ctr];
+							
+							// falls noch nicht in priorityQueue, Aufnahme in diese
+							if (!nodeReachable[closestNodeTarget]) {
+								priorityQueue[priorityQueueLength] = closestNodeTarget;
+								priorityQueueLength++;
+								nodeReachable[closestNodeTarget] = true;
+							}
+						}
 				}
 			}
-			
-			nodesToVisit--;
-			priorityQueue[0] = priorityQueue[nodesToVisit];
+			priorityQueueLength--;
+			priorityQueue[0] = priorityQueue[priorityQueueLength];
+			nodeReachable[closestNode] = false;
 			
 			minHeapSort();
 			
 			finished = true;
 			
+			// falls für nur 1 target kein ergebniss gefunden wurde, ist die Suche NICHT beendet
 			for (int target : targets) {
 				if (distanceArray[target] < distanceArray[priorityQueue[0]]) {
 					finished = false;
@@ -187,34 +221,41 @@ public class Dijkstra {
 	 */
 	private static void minHeapSort() {
 		
-		// bei erstem durchlauf arrayOutOfBounds möglich, deswegen seperater durchlauf mit extra if-Abfrage
+		if (priorityQueueLength == 0)
+			return;
 		
-		int firstParentNode = nodesToVisit / 2;
+		int firstParentNode = (priorityQueueLength - 2) / 2;
 		int childNode = firstParentNode * 2 + 2;
+		
 		int parentPointer = priorityQueue[firstParentNode];
 
-		if (childNode < nodesToVisit && distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
+		// bei erstem durchlauf ArrayOutOfBounds möglich, deswegen seperater durchlauf mit extra if-Abfrage
+		if (childNode < priorityQueueLength &&
+				distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
 			priorityQueue[firstParentNode] = priorityQueue[childNode];
 			priorityQueue[childNode] = parentPointer;
+			
 			parentPointer = priorityQueue[firstParentNode];
 		}
 		
 		childNode--;
 
-		if (childNode < nodesToVisit && distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
+		if (childNode < priorityQueueLength &&
+				distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
 			priorityQueue[firstParentNode] = priorityQueue[childNode];
 			priorityQueue[childNode] = parentPointer;
 		}
 		
 		
 		
-		for (int parentNode = firstParentNode - 1; parentNode >= 0; parentNode--) {
+		for (int parentNode = firstParentNode - 1; parentNode != -1; parentNode--) {
 			childNode--;
 			parentPointer = priorityQueue[parentNode];
 
 			if (distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
 				priorityQueue[parentNode] = priorityQueue[childNode];
 				priorityQueue[childNode] = parentPointer;
+				
 				parentPointer = priorityQueue[parentNode];
 			}
 			
@@ -226,5 +267,4 @@ public class Dijkstra {
 			}
 		}
 	}
-
 }

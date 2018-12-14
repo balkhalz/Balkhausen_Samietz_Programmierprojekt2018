@@ -96,6 +96,9 @@ public class Data {
 			
 			xLatitude[ctr] = Double.parseDouble(tempArray[2]);
 			yLatitude[ctr] = Double.parseDouble(tempArray[3]);
+			
+			// the offsetArray is inicialized with -1, when a node is a dead end it will be distinguished
+			nodeOffset[ctr] = -1;
 		}
 		// System.out.println("Reading and writing nodes finished");
 	}
@@ -141,7 +144,7 @@ public class Data {
 		return endNodeID;
 	}
 
-	public static int[] getedgeValueArray() {
+	public static int[] getEdgeValueArray() {
 		return edgeValue;
 	}
 	
