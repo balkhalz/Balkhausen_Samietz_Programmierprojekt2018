@@ -13,7 +13,6 @@ import data.Data;
 
 public class Utility {
 	private static int index, distance;
-	private static boolean question;
 	private static double startTime = 0;
 	private static File sourceFile, outputFile;
 	private static Scanner scanner;
@@ -43,7 +42,7 @@ public class Utility {
 		} else if (filename.equals("germany")) {
 			sourceFile = new File("src/germany.fmi");
 		} else if (filename.equals("benchs")) {
-			sourceFile = new File("src/benchs.tar");
+			sourceFile = new File("src/Benchs.tar");
 		} else {
 			return null;
 		}
@@ -54,7 +53,6 @@ public class Utility {
 
 		startTimer();
 		tempArray = new int[3];
-		question = false;
 		outputFile = new File("logfile.txt");
 		try {
 			outputFile.createNewFile();
@@ -94,37 +92,32 @@ public class Utility {
 		}
 	}
 
-	public static String benchmark() {
+	public static int benchmark() {
 		try {
 			String[] tempString = null;
-			scanner = new Scanner(new BufferedReader(new FileReader(Utility.readFilePath("benchs.tar"))));
+			scanner = new Scanner(new BufferedReader(new FileReader(Utility.readFilePath("benchs"))));
+			scanner.nextLine();
 			while (scanner.hasNext()) {
-				while (scanner.hasNextInt() != true) {
+				tempString = scanner.nextLine().split(" ");
+
+				if (tempString.length == 1) {
+					tempAnswerList.add(Integer.parseInt(tempString[0]));
+				} else if (tempString.length == 1) {
+					tempStartQuestionList.add(Integer.parseInt(tempString[0]));
+					tempEndQuestionList.add(Integer.parseInt(tempString[1]));
+				} else {
 					scanner.nextLine();
 				}
-				question = !question;
-				index = 0;
-				while (scanner.hasNextInt() == true) {
-					if (question == true) {
-						tempString = scanner.nextLine().split(" ");
-						tempStartQuestionList.add(Integer.parseInt(tempString[0]));
-						tempEndQuestionList.add(Integer.parseInt(tempString[1]));
-					} else {
-						tempString = scanner.nextLine().split(" ");
-						tempAnswerList.add(Integer.parseInt(tempString[0]));
-					}
-				}
-				if (question == false) {
-					for (int i = 0; i < tempStartQuestionList.size(); i++) {
-						tempArray[0] = tempStartQuestionList.get(0);
-						tempStartQuestionList.remove(0);
-						tempArray[1] = tempEndQuestionList.get(0);
-						tempStartQuestionList.remove(0);
-						tempArray[2] = tempAnswerList.get(0);
-						tempStartQuestionList.remove(0);
-						benchmarkList.add(tempArray);
-					}
-				}
+			}
+
+			for (int i = 0; i < tempStartQuestionList.size(); i++) {
+				tempArray[0] = tempStartQuestionList.get(0);
+				tempStartQuestionList.remove(0);
+				tempArray[1] = tempEndQuestionList.get(0);
+				tempStartQuestionList.remove(0);
+				tempArray[2] = tempAnswerList.get(0);
+				tempStartQuestionList.remove(0);
+				benchmarkList.add(tempArray);
 			}
 			scanner.close();
 		} catch (FileNotFoundException e) {
@@ -144,6 +137,6 @@ public class Utility {
 			}
 		}
 
-		return null;
+		return differences.size();
 	}
 }
