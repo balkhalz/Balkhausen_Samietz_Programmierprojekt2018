@@ -17,13 +17,15 @@ public class Window {
 
 	private JFrame frame;
 
-	private int sourceInput, targetInput;
+	private int sourceInput, targetInput, distanceOutput, lastStartNodeID;
 
 	private JTextField sourceTitle, source, targetTitle, target, resultWindow;
 
 	private JButton calculateButton;
 
 	public Window() {
+
+		lastStartNodeID = -1;
 
 		frame = new JFrame();
 		frame.setSize(WIDTH, HEIGHT);
@@ -63,10 +65,19 @@ public class Window {
 			public void actionPerformed(ActionEvent arg0) {
 				sourceInput = Integer.parseInt(source.getText());
 				targetInput = Integer.parseInt(target.getText());
+				distanceOutput = algorithm.Dijkstra.setSourceAndTarget(sourceInput, targetInput);
 
 				resultWindow.setText("The Distance between " + sourceInput + " and " + targetInput + " is: "
-						+ algorithm.Dijkstra.setSourceAndTarget(sourceInput, targetInput) + ". Result calculated in : "
-						+ Utility.endTimer() + " seconds");
+						+ distanceOutput + ". Result calculated in : " + Utility.endTimer() + " seconds");
+
+				if (sourceInput != lastStartNodeID) {
+					Utility.addEmptyLineToOutputFile();
+					Utility.addLineToOutputFile("Dijkstra calculated from " + sourceInput + " in " + Utility.endTimer()
+							+ " seconds." + System.lineSeparator());
+					lastStartNodeID = sourceInput;
+				}
+				Utility.addLineToOutputFile("Distance from " + sourceInput + " to " + targetInput + ": "
+						+ distanceOutput + System.lineSeparator());
 			}
 		});
 		calculateButton.setBounds(WIDTH / 2 - 70, 350, 140, 30);
@@ -77,7 +88,6 @@ public class Window {
 		resultWindow.setEditable(false);
 		resultWindow.setBackground(Color.WHITE);
 		frame.getContentPane().add(resultWindow);
-
 	}
 
 }

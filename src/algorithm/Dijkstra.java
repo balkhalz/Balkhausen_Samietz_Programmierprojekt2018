@@ -12,9 +12,9 @@ public class Dijkstra {
 	private static int amountOfEdges, amountOfNodes;
 
 	private static boolean[] nodeReachable, minimalDistanceFound;
-	private static int priorityQueueLength; // repr舖entiert die L舅de der priorityQueue
-	private static int[] priorityQueue; // enth舁t Verweise auf distanceArray
-	private static int[] distanceArray; // enth舁t Abst舅de von sourceNode zu entsprechender Node
+	private static int priorityQueueLength; // repraesentiert die Laenge der priorityQueue
+	private static int[] priorityQueue; // enthaelt Verweise auf distanceArray
+	private static int[] distanceArray; // enthaelt Abstaende von sourceNode zu entsprechender Node
 
 	/**
 	 * calculates the distance from the source to the target
@@ -93,17 +93,19 @@ public class Dijkstra {
 			priorityQueue[0] = priorityQueue[priorityQueueLength];
 			nodeReachable[closestNode] = false;
 
-			// die Node mit der k�rzesten Distanz, die noch nicht abgehandelt wurde wird and
+			// die Node mit der kuerzesten Distanz, die noch nicht abgehandelt wurde wird an
 			// prioQueue[0] gesetzt
 			minHeapSort();
 
 			/*
-			 * falls keine k�rzerer Distanz mehr mlich ist, d.h. distanz[target] <
-			 * distanz[n臧ster Node], wir die Distanz zur�ckgegeben
+			 * falls keine kuerzerer Distanz mehr moeglich ist, d.h. distanz[target] <
+			 * distanz[naechster Node], wird die Distanz zurueckgegeben
 			 */
-			if (distanceArray[target] < distanceArray[priorityQueue[0]])
+			if (distanceArray[target] < distanceArray[priorityQueue[0]]) {
 				return distanceArray[target];
+			}
 		}
+
 	}
 
 	/**

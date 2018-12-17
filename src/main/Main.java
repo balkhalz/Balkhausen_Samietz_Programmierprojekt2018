@@ -1,14 +1,15 @@
 package main;
 
-import data.Data;
 import GUI.Window;
+import data.Data;
+import utility.Utility;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Data.initialize();
+		Utility.initializeAll();
 		Data.readAndWrite();
-		Data.testData("stuttgart");
+		// Data.testData("stuttgart");
 		new Window();
 	}
 
