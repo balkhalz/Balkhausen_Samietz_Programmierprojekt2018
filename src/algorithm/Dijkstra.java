@@ -174,7 +174,7 @@ public class Dijkstra {
 			// ihr zeigen
 			if (b != -1) {
 
-				// da edgeOffset[tempNode + 1] eine Exception wefen kann, wird hier nachgefragt
+				// da edgeOffset[tempNode + 1] eine Exception werfen kann, wird hier nachgefragt
 				if (closestNode + 1 == amountOfNodes)
 					n = amountOfEdges;
 				else
@@ -205,7 +205,7 @@ public class Dijkstra {
 
 			finished = true;
 
-			// falls f�r nur 1 target kein ergebniss gefunden wurde, ist die Suche NICHT
+			// falls fuer nur 1 target kein ergebnis gefunden wurde, ist die Suche NICHT
 			// beendet
 			for (int target : targets) {
 				if (distanceArray[target] < distanceArray[priorityQueue[0]]) {
@@ -224,8 +224,8 @@ public class Dijkstra {
 	/**
 	 * minHeap sortierer
 	 * 
-	 * sortiert die ersten n = nodesToVisit nodes der PrioQueue anhand der L舅ge x =
-	 * distanceArray[prioQueue[i]] von der Node i
+	 * sortiert die ersten n = nodesToVisit nodes der PrioQueue anhand der Laenge x
+	 * = distanceArray[prioQueue[i]] von der Node i
 	 * 
 	 */
 	private static void minHeapSort() {
@@ -238,7 +238,7 @@ public class Dijkstra {
 
 		int parentPointer = priorityQueue[firstParentNode];
 
-		// bei erstem durchlauf ArrayOutOfBounds mlich, deswegen seperater durchlauf
+		// bei erstem durchlauf ArrayOutOfBounds moeglich, deswegen seperater durchlauf
 		// mit extra if-Abfrage
 		if (childNode < priorityQueueLength && distanceArray[parentPointer] > distanceArray[priorityQueue[childNode]]) {
 			priorityQueue[firstParentNode] = priorityQueue[childNode];

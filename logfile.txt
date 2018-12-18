@@ -1,4 +1,7 @@
 This is the logfile for our routeplanner.
 
-Setting up data structures completed in 0.33461443 seconds.
-Reading data from file completed in 38.97053602 seconds.
+Setting up data structures completed in 0.423647073 seconds.
+Reading data from file completed in 41.507750961 seconds.
+
+Dijkstra calculated from 1234 in 332.63506566 seconds.
+Distance from 1234 to 12345: 1361980
