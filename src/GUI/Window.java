@@ -71,13 +71,13 @@ public class Window {
 						+ distanceOutput + ". Result calculated in : " + Utility.endTimer() + " seconds");
 
 				if (sourceInput != lastStartNodeID) {
-					Utility.addEmptyLineToOutputFile();
-					Utility.addLineToOutputFile("Dijkstra calculated from " + sourceInput + " in " + Utility.endTimer()
-							+ " seconds." + System.lineSeparator());
+					Utility.addEmptyLineToFile(Utility.getLogFileWriter());
+					Utility.addLineToFile("Dijkstra calculated from " + sourceInput + " in " + Utility.endTimer()
+							+ " seconds." + System.lineSeparator(), Utility.getLogFileWriter());
 					lastStartNodeID = sourceInput;
 				}
-				Utility.addLineToOutputFile("Distance from " + sourceInput + " to " + targetInput + ": "
-						+ distanceOutput + System.lineSeparator());
+				Utility.addLineToFile("Distance from " + sourceInput + " to " + targetInput + ": " + distanceOutput
+						+ System.lineSeparator(), Utility.getLogFileWriter());
 			}
 		});
 		calculateButton.setBounds(WIDTH / 2 - 70, 350, 140, 30);

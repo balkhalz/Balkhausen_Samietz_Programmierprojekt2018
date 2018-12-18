@@ -10,7 +10,7 @@ public class Main {
 		Data.readAndWrite();
 		// Data.testData("stuttgart");
 		// new Window();
-		System.out.println("Differences: " + Utility.benchmark());
+		Utility.benchmark();
 	}
 
 }

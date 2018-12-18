@@ -65,9 +65,9 @@ public class Data {
 		Utility.startTimer();
 		readNodes();
 		readEdges();
-		Utility.addLineToOutputFile(
-				"Reading data from file completed in " + Utility.endTimer() + " seconds." + System.lineSeparator());
-		Utility.addEmptyLineToOutputFile();
+		Utility.addLineToFile(
+				"Reading data from file completed in " + Utility.endTimer() + " seconds." + System.lineSeparator(),
+				Utility.getLogFileWriter());
 	}
 
 	/**
@@ -136,21 +136,6 @@ public class Data {
 
 	public static int[] getEdgeValueArray() {
 		return edgeValue;
-	}
-
-	public static void testData(String map) {
-		if (map.equals("stuttgart")) {
-			if (xLatitude[0] == 48.667433800000005 && yLatitude[0] == 9.244591100000001 && nodeOffset[0] == 0
-					&& xLatitude[nodeAmount - 1] == 48.6420947 && yLatitude[nodeAmount - 1] == 9.0148112
-					&& nodeOffset[nodeAmount - 1] == 2292885) {
-				System.out.println("Nodes setup correctly!");
-			}
-			if (startNodeID[0] == 0 && endNodeID[0] == 1104366 && edgeValue[0] == 55
-					&& startNodeID[edgeAmount - 1] == 1132112 && endNodeID[edgeAmount - 1] == 1131157
-					&& edgeValue[edgeAmount - 1] == 462) {
-				System.out.println("Edges setup correctly!");
-			}
-		}
 	}
 
 }
