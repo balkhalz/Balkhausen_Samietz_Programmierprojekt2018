@@ -15,7 +15,7 @@ import data.Data;
 public class Utility {
 	private static int index, differences;
 	private static double startTime = 0;
-	private static File logFile, resultsFile, germanyFmiFile, questionFile, solutionFile;
+	private static File logFile, resultsFile, sourceFile, questionFile, solutionFile;
 	private static Scanner scanner;
 	private static FileWriter logfileWriter, resultsFileWriter;
 
@@ -34,9 +34,10 @@ public class Utility {
 		startTimer();
 		logFile = new File("logfile.txt");
 		resultsFile = new File("results.sol");
-		germanyFmiFile = new File("src/germany.fmi");
+		sourceFile = new File("src/germany.fmi");
 		questionFile = new File("src/germany.que");
 		solutionFile = new File("src/germany.sol");
+
 		try {
 			logFile.createNewFile();
 			resultsFile.createNewFile();
@@ -90,12 +91,33 @@ public class Utility {
 		return logfileWriter;
 	}
 
-	public static File getGermanyFile() {
-		return germanyFmiFile;
+	public static File getSourceFile() {
+		return sourceFile;
+	}
+
+	public static File getQuestionFile() {
+		return questionFile;
+	}
+
+	public static File getSolutionFile() {
+		return solutionFile;
+	}
+
+	public static void setSourceFile(File file) {
+		sourceFile = file;
+	}
+
+	public static void setQuestionFile(File file) {
+		questionFile = file;
+	}
+
+	public static void setSolutionFile(File file) {
+		solutionFile = file;
 	}
 
 	public static void readQuestionFile() {
 		startTimer();
+		int iter = 0;
 		try {
 			scanner = new Scanner(new BufferedReader(new FileReader(questionFile)));
 			while (scanner.hasNext()) {
@@ -104,6 +126,8 @@ public class Utility {
 						Dijkstra.setSourceAndTarget(Integer.parseInt(tempString.split(" ")[0]),
 								Integer.parseInt(tempString.split(" ")[1])) + System.lineSeparator(),
 						resultsFileWriter);
+				System.out.println("Check " + iter + " completed.");
+				iter++;
 			}
 			addLineToFile("Benchmark completed in " + endTimer() + " seconds.", logfileWriter);
 			System.out.println("Benchmark completed.");

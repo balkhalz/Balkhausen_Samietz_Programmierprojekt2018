@@ -1,4 +1,4 @@
 This is the logfile for our routeplanner.
 
-Setting up data structures completed in 0.33461443 seconds.
-Reading data from file completed in 38.97053602 seconds.
+Setting up data structures completed in 0.370365083 seconds.
+Reading data from file completed in 42.365956978 seconds.
