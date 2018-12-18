@@ -15,7 +15,7 @@ import data.Data;
 public class Utility {
 	private static int index, differences;
 	private static double startTime = 0;
-	private static File solSourceFile, logFile, resultsFile;
+	private static File logFile, resultsFile, germanyFmiFile, questionFile, solutionFile;
 	private static Scanner scanner;
 	private static FileWriter logfileWriter, resultsFileWriter;
 
@@ -29,33 +29,14 @@ public class Utility {
 		return (System.nanoTime() - startTime) / 1000000000;
 	}
 
-	/**
-	 * This method returns the filepath of the sourcefile.
-	 * 
-	 * @return
-	 */
-	public static File readFilePath(String filename) {
-		if (filename.equals("stuttgart")) {
-			solSourceFile = new File("src/stgtregbz.fmi");
-		} else if (filename.equals("bw")) {
-			solSourceFile = new File("src/bw.fmi");
-		} else if (filename.equals("germany")) {
-			solSourceFile = new File("src/germany.fmi");
-		} else if (filename.equals("questions")) {
-			solSourceFile = new File("src/germany.que");
-		} else if (filename.equals("solutions")) {
-			solSourceFile = new File("src/germany.sol");
-		}
-		return solSourceFile;
-	}
-
 	public static void initializeAll() {
 
 		startTimer();
-		solSourceFile = new File("src/germany.que");
 		logFile = new File("logfile.txt");
 		resultsFile = new File("results.sol");
-
+		germanyFmiFile = new File("src/germany.fmi");
+		questionFile = new File("src/germany.que");
+		solutionFile = new File("src/germany.sol");
 		try {
 			logFile.createNewFile();
 			resultsFile.createNewFile();
@@ -109,10 +90,14 @@ public class Utility {
 		return logfileWriter;
 	}
 
+	public static File getGermanyFile() {
+		return germanyFmiFile;
+	}
+
 	public static void readQuestionFile() {
 		startTimer();
 		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(Utility.readFilePath("questions"))));
+			scanner = new Scanner(new BufferedReader(new FileReader(questionFile)));
 			while (scanner.hasNext()) {
 				String tempString = scanner.nextLine();
 				addLineToFile(
@@ -127,12 +112,12 @@ public class Utility {
 			e.printStackTrace();
 		}
 
-		if (solSourceFile != null) {
-			System.out.println("Differences: " + compareQuestionToSolution(resultsFile, readFilePath("solutions")));
+		if (solutionFile != null) {
+			System.out.println("Differences: " + compareQuestionToSolution(resultsFile, solutionFile));
 		}
 	}
 
-	public static int compareQuestionToSolution(File resultsFile, File solutionsFile) {
+	private static int compareQuestionToSolution(File resultsFile, File solutionsFile) {
 		differences = 0;
 		try {
 			Scanner resultsFileScanner = new Scanner(new BufferedReader(new FileReader(resultsFile)));

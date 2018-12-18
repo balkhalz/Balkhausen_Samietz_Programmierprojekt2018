@@ -38,7 +38,7 @@ public class Data {
 
 		// initializing the scanner
 		try {
-			reader = new BufferedReader(new FileReader(Utility.readFilePath("germany")));
+			reader = new BufferedReader(new FileReader(Utility.getGermanyFile()));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
