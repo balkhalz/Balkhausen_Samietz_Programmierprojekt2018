@@ -128,7 +128,7 @@ public class Utility {
 		}
 
 		if (solSourceFile != null) {
-			System.out.println("Differences: " + compareQuestionToSolution(resultsFile, solSourceFile));
+			System.out.println("Differences: " + compareQuestionToSolution(resultsFile, readFilePath("solutions")));
 		}
 	}
 
