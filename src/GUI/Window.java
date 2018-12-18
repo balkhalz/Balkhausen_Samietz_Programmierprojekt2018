@@ -21,7 +21,7 @@ public class Window {
 
 	private JTextField sourceTitle, source, targetTitle, target, resultWindow;
 
-	private JButton calculateButton, benchmarkButton;
+	private JButton calculateButton;
 
 	public Window() {
 
@@ -82,16 +82,6 @@ public class Window {
 		});
 		calculateButton.setBounds(WIDTH / 2 - 70, 350, 140, 30);
 		frame.getContentPane().add(calculateButton);
-
-		/*
-		 * benchmarkButton = new JButton("Benchmark");
-		 * benchmarkButton.addActionListener(new ActionListener() {
-		 * 
-		 * @Override public void actionPerformed(ActionEvent arg0) {
-		 * resultWindow.setText("Differences: " + Utility.benchmark()); } });
-		 * benchmarkButton.setBounds(WIDTH / 2 - 70, 350, 140, 30);
-		 * frame.getContentPane().add(benchmarkButton);
-		 */
 
 		resultWindow = new JTextField();
 		resultWindow.setBounds(75, 400, WIDTH - 150, 30);

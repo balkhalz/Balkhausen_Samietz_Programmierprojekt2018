@@ -10,7 +10,7 @@ public class Main {
 		Data.readAndWrite();
 		// Data.testData("stuttgart");
 		// new Window();
-		Utility.benchmark();
+		Utility.readQuestionFile();
 	}
 
 }
