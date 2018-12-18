@@ -3,15 +3,11 @@ package GUI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import data.Data;
 import utility.Utility;
 
 public class Window {
@@ -23,9 +19,9 @@ public class Window {
 
 	private int sourceInput, targetInput, distanceOutput, lastStartNodeID;
 
-	private JTextField sourceTitle, source, targetTitle, target, resultWindow, sourceFile, questionFile, solutionFile;
+	private JTextField sourceTitle, source, targetTitle, target, resultWindow;
 
-	private JButton calculateButton, graphSourceFileButton, questionSourceFileButton, solutionSourceFileButton;
+	private JButton calculateButton;
 
 	public Window() {
 
@@ -84,87 +80,8 @@ public class Window {
 						+ System.lineSeparator(), Utility.getLogFileWriter());
 			}
 		});
-		calculateButton.setBounds(75, 300, 140, 30);
+		calculateButton.setBounds(WIDTH / 2 - 70, 350, 140, 30);
 		frame.getContentPane().add(calculateButton);
-
-		sourceFile = new JTextField(" ");
-		sourceFile.setBounds(225, 300, 140, 30);
-		sourceFile.setEditable(false);
-		frame.getContentPane().add(sourceFile);
-
-		graphSourceFileButton = new JButton(".fmi Sourcefile");
-		graphSourceFileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser jfc = new JFileChooser();
-				jfc.setDialogTitle("Choose a .fmi sourcefile: ");
-				File workingDirectory = new File(System.getProperty("user.dir"));
-				jfc.setCurrentDirectory(workingDirectory);
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(".fmi files", new String[] { "fmi" });
-				jfc.setFileFilter(filter);
-				jfc.addChoosableFileFilter(filter);
-				int returnVal = jfc.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					Utility.setSourceFile(new File(jfc.getSelectedFile().getAbsolutePath()));
-					sourceFile.setText(Utility.getSourceFile().getName());
-				}
-			}
-		});
-		graphSourceFileButton.setBounds(225, 350, 140, 30);
-		frame.getContentPane().add(graphSourceFileButton);
-
-		questionFile = new JTextField(" ");
-		questionFile.setBounds(375, 300, 140, 30);
-		questionFile.setEditable(false);
-		frame.getContentPane().add(questionFile);
-
-		questionSourceFileButton = new JButton(".que Sourcefile");
-		questionSourceFileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser jfc = new JFileChooser();
-				jfc.setDialogTitle("Choose a .que sourcefile: ");
-				File workingDirectory = new File(System.getProperty("user.dir"));
-				jfc.setCurrentDirectory(workingDirectory);
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(".que files", new String[] { "que" });
-				jfc.setFileFilter(filter);
-				jfc.addChoosableFileFilter(filter);
-				int returnVal = jfc.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					Utility.setSourceFile(new File(jfc.getSelectedFile().getAbsolutePath()));
-					questionFile.setText(Utility.getQuestionFile().getName());
-					Data.readAndWrite();
-				}
-			}
-		});
-		questionSourceFileButton.setBounds(375, 350, 140, 30);
-		frame.getContentPane().add(questionSourceFileButton);
-
-		solutionFile = new JTextField(" ");
-		solutionFile.setBounds(525, 300, 140, 30);
-		solutionFile.setEditable(false);
-		frame.getContentPane().add(solutionFile);
-
-		solutionSourceFileButton = new JButton(".sol Sourcefile");
-		solutionSourceFileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser jfc = new JFileChooser();
-				jfc.setDialogTitle("Choose a .sol sourcefile: ");
-				File workingDirectory = new File(System.getProperty("user.dir"));
-				jfc.setCurrentDirectory(workingDirectory);
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(".sol files", new String[] { "sol" });
-				jfc.setFileFilter(filter);
-				jfc.addChoosableFileFilter(filter);
-				int returnVal = jfc.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					Utility.setSolutionFile(new File(jfc.getSelectedFile().getAbsolutePath()));
-					solutionFile.setText(Utility.getSolutionFile().getName());
-				}
-			}
-		});
-		solutionSourceFileButton.setBounds(525, 350, 140, 30);
-		frame.getContentPane().add(solutionSourceFileButton);
 
 		resultWindow = new JTextField();
 		resultWindow.setBounds(75, 400, WIDTH - 150, 30);

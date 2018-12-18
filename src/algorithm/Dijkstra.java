@@ -9,7 +9,7 @@ public class Dijkstra {
 
 	private static int[] edgeOffset, endNodeID, edgeValue;
 
-	private static int amountOfEdges, amountOfNodes, lastSource = 0;
+	private static int amountOfEdges, amountOfNodes;
 
 	private static boolean[] nodeReachable, minimalDistanceFound;
 	private static int priorityQueueLength; // repraesentiert die Laenge der priorityQueue
@@ -26,9 +26,6 @@ public class Dijkstra {
 	public static int setSourceAndTarget(int source, int target) {
 
 		Utility.startTimer();
-		/*
-		 * if (source == lastSource) { return distanceArray[target]; }
-		 */
 
 		edgeOffset = Data.getOffsetArray();
 		endNodeID = Data.getEndNodeIDArray();
@@ -105,7 +102,6 @@ public class Dijkstra {
 			 * distanz[naechster Node], wird die Distanz zurueckgegeben
 			 */
 			if (distanceArray[target] < distanceArray[priorityQueue[0]]) {
-				lastSource = source;
 				return distanceArray[target];
 			}
 		}

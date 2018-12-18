@@ -39,7 +39,7 @@ public class Data {
 
 		// initializing the scanner
 		try {
-			reader = new BufferedReader(new FileReader(Utility.getSourceFile()));
+			reader = new BufferedReader(new FileReader(Utility.getGermanyFile()));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
