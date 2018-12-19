@@ -122,6 +122,7 @@ public class Data {
 			e.printStackTrace();
 		}
 
+		// initializing nodeAmount, edgeAmount
 		skipLines(5);
 		try {
 			nodeAmount = Integer.parseInt(reader.readLine());
@@ -139,14 +140,25 @@ public class Data {
 		endNodeID = new int[edgeAmount];
 		edgeValue = new int[edgeAmount];
 
+		// reading the data of the .fmi file
 		readAndWrite();
 		Window.eventWindow.setText("Data Structures for the map are set.");
 	}
 
+	/**
+	 * This is a getter-method for the variable nodeAmount.
+	 * 
+	 * @return
+	 */
 	public static int getNodeAmount() {
 		return nodeAmount;
 	}
 
+	/**
+	 * This is a getter-method for the variable edgeAmount.
+	 * 
+	 * @return
+	 */
 	public static int getEdgeAmount() {
 		return edgeAmount;
 	}

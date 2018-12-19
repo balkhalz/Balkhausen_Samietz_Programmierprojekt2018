@@ -27,6 +27,10 @@ public class Benchmark {
 		return difference;
 	}
 
+	/**
+	 * This method compares our dijkstra-results with the previously given .sol
+	 * file.
+	 */
 	private static void checkQueSol() {
 		difference = 0;
 
@@ -49,6 +53,11 @@ public class Benchmark {
 		}
 	}
 
+	/**
+	 * This method reads the given .que-file and saves its contents in arrays.
+	 * 
+	 * @param que
+	 */
 	private static void readQuestions(File que) {
 
 		Utility.startTimer();
@@ -105,6 +114,11 @@ public class Benchmark {
 				+ " seconds." + System.lineSeparator(), Utility.getLogFileWriter());
 	}
 
+	/**
+	 * This method reads a given .sol-file and saves its contents into an array.
+	 * 
+	 * @param sol
+	 */
 	private static void readSolutions(File sol) {
 
 		Utility.startTimer();
