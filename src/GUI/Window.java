@@ -12,20 +12,26 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import data.Data;
+import utility.Utility;
+
 public class Window {
 
 	private final int WIDTH = 900, HEIGHT = 600;
 	private final String TITLE = "Routenplaner";
+	private boolean isMapEmpty;
 
 	private JFrame frame;
 
+	public static JTextField eventWindow;
 	private JTextField sourceTitle, source, targetTitle, target, distanceWindow, differenceWindow;
-
+	private JTextArea solFilePath, queFilePath, mapFilePath;
 	private JButton calculatedistanceButton, calculatedifferenceButton;
 
 	private File map, que, sol;
 
 	public Window() {
+		isMapEmpty = true;
 
 		frame = new JFrame();
 		frame.setSize(WIDTH, HEIGHT);
@@ -65,6 +71,12 @@ public class Window {
 		targetTitle.setEditable(false);
 		frame.getContentPane().add(targetTitle);
 
+		eventWindow = new JTextField("No map has been set.");
+		eventWindow.setBounds(75, 237, WIDTH - 150, 30);
+		eventWindow.setEditable(false);
+		eventWindow.setBackground(Color.WHITE);
+		frame.getContentPane().add(eventWindow);
+
 		target = new JTextField();
 		target.setBounds(200, 125, WIDTH - 275, 30);
 		frame.getContentPane().add(target);
@@ -73,14 +85,27 @@ public class Window {
 		calculatedistanceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				if (isMapEmpty == true) {
+					eventWindow.setText("Please choose a map before calculating!");
+					return;
+				} else if (source.getText().equals("")) {
+					eventWindow.setText("Please choose a StartNode before calculating!");
+					return;
+				} else if (target.getText().equals("")) {
+					eventWindow.setText("Please choose a EndNode before calculating!");
+					return;
+				}
+
 				int sourceIn = Integer.parseInt(source.getText());
 				int targetIn = Integer.parseInt(target.getText());
 
 				long time1 = System.currentTimeMillis();
+				int tempDistance = algorithm.Dijkstra.setSourceAndTarget(sourceIn, targetIn);
 
-				distanceWindow.setText("The Distance between " + sourceIn + " and " + targetIn + " is: "
-						+ algorithm.Dijkstra.setSourceAndTarget(sourceIn, targetIn) + "\tCalculated in "
-						+ (System.currentTimeMillis() - time1) / 1000 + " seconds");
+				distanceWindow.setText("The Distance between " + sourceIn + " and " + targetIn + " is: " + tempDistance
+						+ "\tCalculated in " + (System.currentTimeMillis() - time1) / 1000 + " seconds");
+				Utility.addLineToFile("Distance from " + sourceIn + " to " + targetIn + " is: " + tempDistance,
+						Utility.getLogFileWriter());
 			}
 		});
 		calculatedistanceButton.setBounds(75, 185, 175, 30);
@@ -95,7 +120,7 @@ public class Window {
 	}
 
 	private void addFileChooserMap() {
-		JTextArea mapFilePath = new JTextArea();
+		mapFilePath = new JTextArea();
 		mapFilePath.setBounds(200, 300, WIDTH - 275, 30);
 		mapFilePath.setEditable(false);
 		frame.getContentPane().add(mapFilePath);
@@ -118,9 +143,12 @@ public class Window {
 					fileName = map.getName();
 					fileType = fileName.substring(fileName.length() - 4, fileName.length());
 
-					if (fileType.equals(".fmi"))
+					if (fileType.equals(".fmi")) {
 						mapFilePath.setText(" " + fileName);
-					else
+						eventWindow.setText(" " + fileName + " is the map now.");
+						isMapEmpty = false;
+						Data.initialize(map);
+					} else
 						map = null;
 				}
 			}
@@ -131,7 +159,7 @@ public class Window {
 	}
 
 	private void addFileChooserQue() {
-		JTextArea queFilePath = new JTextArea();
+		queFilePath = new JTextArea();
 		queFilePath.setBounds(200, 350, WIDTH - 275, 30);
 		queFilePath.setEditable(false);
 		frame.getContentPane().add(queFilePath);
@@ -154,9 +182,10 @@ public class Window {
 					fileName = que.getName();
 					fileType = fileName.substring(fileName.length() - 4, fileName.length());
 
-					if (fileType.equals(".que"))
+					if (fileType.equals(".que")) {
 						queFilePath.setText(" " + fileName);
-					else
+						eventWindow.setText(" " + fileName + " is the que-file now.");
+					} else
 						que = null;
 				}
 			}
@@ -167,7 +196,7 @@ public class Window {
 	}
 
 	private void addFileChooserSol() {
-		JTextArea solFilePath = new JTextArea();
+		solFilePath = new JTextArea();
 		solFilePath.setBounds(200, 400, WIDTH - 275, 30);
 		solFilePath.setEditable(false);
 		frame.getContentPane().add(solFilePath);
@@ -190,9 +219,10 @@ public class Window {
 					fileName = sol.getName();
 					fileType = fileName.substring(fileName.length() - 4, fileName.length());
 
-					if (fileType.equals(".sol"))
+					if (fileType.equals(".sol")) {
 						solFilePath.setText(" " + fileName);
-					else
+						eventWindow.setText(" " + fileName + " is the sol-file now.");
+					} else
 						sol = null;
 				}
 			}
@@ -208,7 +238,16 @@ public class Window {
 		calculatedifferenceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-
+				if (mapFilePath.getText().equals("")) {
+					eventWindow.setText("Please choose a map before calculating!");
+					return;
+				} else if (queFilePath.getText().equals("")) {
+					eventWindow.setText("Please choose a StartNode before calculating!");
+					return;
+				} else if (solFilePath.getText().equals("")) {
+					eventWindow.setText("Please choose a EndNode before calculating!");
+					return;
+				}
 				long time1 = System.currentTimeMillis();
 
 				differenceWindow.setText("The Difference between the .sol file and the calculated Results is "

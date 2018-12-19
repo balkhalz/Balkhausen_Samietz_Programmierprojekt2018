@@ -1,3 +1,15 @@
 This is the logfile for our routeplanner.
 
-Setting up data structures completed in 0.478785238 seconds.
+Reading data from file completed in 41.316279725 seconds.
+Distance from 8371825 to 16743651 is: 648681Reading questions from file germany.que completed in 0.02030036 seconds.
+Reading solution from file results.sol completed in 2.85517E-4 seconds.
+Source node 8371825 paths calculated in 0.153752751 seconds.
+Source node 8371826 paths calculated in 0.044746633 seconds.
+Source node 8371827 paths calculated in 0.07381686 seconds.
+Source node 8371828 paths calculated in 0.045320778 seconds.
+Source node 8371829 paths calculated in 0.046857845 seconds.
+Source node 8371830 paths calculated in 0.044057098 seconds.
+Source node 8371831 paths calculated in 0.044460493 seconds.
+Source node 8371832 paths calculated in 0.0453214 seconds.
+Source node 8371833 paths calculated in 0.045433057 seconds.
+Source node 8371834 paths calculated in 0.044207944 seconds.

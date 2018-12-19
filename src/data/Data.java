@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import GUI.Window;
 import utility.Utility;
 
 public class Data {
@@ -33,33 +34,6 @@ public class Data {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void initialize() {
-
-		// initializing the scanner
-		try {
-			reader = new BufferedReader(new FileReader(Utility.getSourceFile()));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		skipLines(5);
-		try {
-			nodeAmount = Integer.parseInt(reader.readLine());
-			edgeAmount = Integer.parseInt(reader.readLine());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		// initializing the arrays to be used with the amount of nodes and edges
-		nodeOffset = new int[nodeAmount];
-		xLatitude = new double[nodeAmount];
-		yLatitude = new double[nodeAmount];
-
-		startNodeID = new int[edgeAmount];
-		endNodeID = new int[edgeAmount];
-		edgeValue = new int[edgeAmount];
 	}
 
 	public static void readAndWrite() {
@@ -164,6 +138,9 @@ public class Data {
 		startNodeID = new int[edgeAmount];
 		endNodeID = new int[edgeAmount];
 		edgeValue = new int[edgeAmount];
+
+		readAndWrite();
+		Window.eventWindow.setText("Data Structures for the map are set.");
 	}
 
 }
