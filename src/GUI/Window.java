@@ -3,12 +3,14 @@ package GUI;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import utility.Utility;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Window {
 
@@ -17,15 +19,13 @@ public class Window {
 
 	private JFrame frame;
 
-	private int sourceInput, targetInput, distanceOutput, lastStartNodeID;
+	private JTextField sourceTitle, source, targetTitle, target, distanceWindow, differenceWindow;
 
-	private JTextField sourceTitle, source, targetTitle, target, resultWindow;
+	private JButton calculatedistanceButton, calculatedifferenceButton;
 
-	private JButton calculateButton;
+	private File map, que, sol;
 
 	public Window() {
-
-		lastStartNodeID = -1;
 
 		frame = new JFrame();
 		frame.setSize(WIDTH, HEIGHT);
@@ -35,59 +35,195 @@ public class Window {
 		frame.setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		addStuff();
+		addBasicPathFinder(); // y: 0 - 250
+		addQueSolDifference();
+
 		frame.setVisible(true);
 	}
 
-	private void addStuff() {
+	private void addQueSolDifference() {
+		addFileChooserMap();
+		addFileChooserQue();
+		addFileChooserSol();
+
+		addCalculateDifferenceButton();
+	}
+
+	private void addBasicPathFinder() {
 
 		sourceTitle = new JTextField("Source");
-		sourceTitle.setBounds(75, 75, WIDTH - 150, 30);
+		sourceTitle.setBounds(75, 75, 100, 30);
 		sourceTitle.setEditable(false);
 		frame.getContentPane().add(sourceTitle);
 
 		source = new JTextField();
-		source.setBounds(75, 125, WIDTH - 150, 30);
+		source.setBounds(200, 75, WIDTH - 275, 30);
 		frame.getContentPane().add(source);
 
 		targetTitle = new JTextField("Target");
-		targetTitle.setBounds(75, 200, WIDTH - 150, 30);
+		targetTitle.setBounds(75, 125, 100, 30);
 		targetTitle.setEditable(false);
 		frame.getContentPane().add(targetTitle);
 
 		target = new JTextField();
-		target.setBounds(75, 250, WIDTH - 150, 30);
+		target.setBounds(200, 125, WIDTH - 275, 30);
 		frame.getContentPane().add(target);
 
-		calculateButton = new JButton("Calculate");
-		calculateButton.addActionListener(new ActionListener() {
+		calculatedistanceButton = new JButton("Calculate Distance");
+		calculatedistanceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				sourceInput = Integer.parseInt(source.getText());
-				targetInput = Integer.parseInt(target.getText());
-				distanceOutput = algorithm.Dijkstra.setSourceAndTarget(sourceInput, targetInput);
+				int sourceIn = Integer.parseInt(source.getText());
+				int targetIn = Integer.parseInt(target.getText());
 
-				resultWindow.setText("The Distance between " + sourceInput + " and " + targetInput + " is: "
-						+ distanceOutput + ". Result calculated in : " + Utility.endTimer() + " seconds");
+				long time1 = System.currentTimeMillis();
 
-				if (sourceInput != lastStartNodeID) {
-					Utility.addEmptyLineToFile(Utility.getLogFileWriter());
-					Utility.addLineToFile("Dijkstra calculated from " + sourceInput + " in " + Utility.endTimer()
-							+ " seconds." + System.lineSeparator(), Utility.getLogFileWriter());
-					lastStartNodeID = sourceInput;
-				}
-				Utility.addLineToFile("Distance from " + sourceInput + " to " + targetInput + ": " + distanceOutput
-						+ System.lineSeparator(), Utility.getLogFileWriter());
+				distanceWindow.setText("The Distance between " + sourceIn + " and " + targetIn + " is: "
+						+ algorithm.Dijkstra.setSourceAndTarget(sourceIn, targetIn) + "\tCalculated in "
+						+ (System.currentTimeMillis() - time1) / 1000 + " seconds");
 			}
 		});
-		calculateButton.setBounds(WIDTH / 2 - 70, 350, 140, 30);
-		frame.getContentPane().add(calculateButton);
+		calculatedistanceButton.setBounds(75, 185, 175, 30);
+		frame.getContentPane().add(calculatedistanceButton);
 
-		resultWindow = new JTextField();
-		resultWindow.setBounds(75, 400, WIDTH - 150, 30);
-		resultWindow.setEditable(false);
-		resultWindow.setBackground(Color.WHITE);
-		frame.getContentPane().add(resultWindow);
+		distanceWindow = new JTextField();
+		distanceWindow.setBounds(275, 185, WIDTH - 350, 30);
+		distanceWindow.setEditable(false);
+		distanceWindow.setBackground(Color.WHITE);
+		frame.getContentPane().add(distanceWindow);
+
+	}
+
+	private void addFileChooserMap() {
+		JTextArea mapFilePath = new JTextArea();
+		mapFilePath.setBounds(200, 300, WIDTH - 275, 30);
+		mapFilePath.setEditable(false);
+		frame.getContentPane().add(mapFilePath);
+
+		JButton mapFileChooser = new JButton("Map");
+		mapFileChooser.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String userDirLocation = System.getProperty("user.dir");
+				File userDir = new File(userDirLocation);
+				JFileChooser fileChooser = new JFileChooser(userDir);
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(".fmi file", new String[] { "fmi" });
+				fileChooser.setFileFilter(filter);
+				fileChooser.addChoosableFileFilter(filter);
+				String fileName, fileType = null;
+
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					map = fileChooser.getSelectedFile();
+					fileName = map.getName();
+					fileType = fileName.substring(fileName.length() - 4, fileName.length());
+
+					if (fileType.equals(".fmi"))
+						mapFilePath.setText(" " + fileName);
+					else
+						map = null;
+				}
+			}
+		});
+
+		mapFileChooser.setBounds(75, 300, 100, 30);
+		frame.getContentPane().add(mapFileChooser);
+	}
+
+	private void addFileChooserQue() {
+		JTextArea queFilePath = new JTextArea();
+		queFilePath.setBounds(200, 350, WIDTH - 275, 30);
+		queFilePath.setEditable(false);
+		frame.getContentPane().add(queFilePath);
+
+		JButton queFileChooser = new JButton("Question");
+		queFileChooser.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String userDirLocation = System.getProperty("user.dir");
+				File userDir = new File(userDirLocation);
+				JFileChooser fileChooser = new JFileChooser(userDir);
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(".que file", new String[] { "que" });
+				fileChooser.setFileFilter(filter);
+				fileChooser.addChoosableFileFilter(filter);
+				String fileName, fileType = null;
+
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					que = fileChooser.getSelectedFile();
+					fileName = que.getName();
+					fileType = fileName.substring(fileName.length() - 4, fileName.length());
+
+					if (fileType.equals(".que"))
+						queFilePath.setText(" " + fileName);
+					else
+						que = null;
+				}
+			}
+		});
+
+		queFileChooser.setBounds(75, 350, 100, 30);
+		frame.getContentPane().add(queFileChooser);
+	}
+
+	private void addFileChooserSol() {
+		JTextArea solFilePath = new JTextArea();
+		solFilePath.setBounds(200, 400, WIDTH - 275, 30);
+		solFilePath.setEditable(false);
+		frame.getContentPane().add(solFilePath);
+
+		JButton solFileChooser = new JButton("Solution");
+		solFileChooser.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String userDirLocation = System.getProperty("user.dir");
+				File userDir = new File(userDirLocation);
+				JFileChooser fileChooser = new JFileChooser(userDir);
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(".sol file", new String[] { "sol" });
+				fileChooser.setFileFilter(filter);
+				fileChooser.addChoosableFileFilter(filter);
+				String fileName, fileType = null;
+
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					sol = fileChooser.getSelectedFile();
+					fileName = sol.getName();
+					fileType = fileName.substring(fileName.length() - 4, fileName.length());
+
+					if (fileType.equals(".sol"))
+						solFilePath.setText(" " + fileName);
+					else
+						sol = null;
+				}
+			}
+		});
+
+		solFileChooser.setBounds(75, 400, 100, 30);
+		frame.getContentPane().add(solFileChooser);
+	}
+
+	private void addCalculateDifferenceButton() {
+
+		calculatedifferenceButton = new JButton("Calculate Difference");
+		calculatedifferenceButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+				long time1 = System.currentTimeMillis();
+
+				differenceWindow.setText("The Difference between the .sol file and the calculated Results is "
+						+ algorithm.Benchmark.calculateDifference(map, que, sol) + "\tCalculated in "
+						+ (System.currentTimeMillis() - time1) / 1000 + " seconds");
+			}
+		});
+		calculatedifferenceButton.setBounds(75, 475, 175, 30);
+		frame.getContentPane().add(calculatedifferenceButton);
+
+		differenceWindow = new JTextField();
+		differenceWindow.setBounds(275, 475, WIDTH - 350, 30);
+		differenceWindow.setEditable(false);
+		differenceWindow.setBackground(Color.WHITE);
+		frame.getContentPane().add(differenceWindow);
 	}
 
 }

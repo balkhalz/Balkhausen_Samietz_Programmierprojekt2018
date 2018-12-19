@@ -1,5 +1,6 @@
 package main;
 
+import GUI.Window;
 import data.Data;
 import utility.Utility;
 
@@ -9,8 +10,8 @@ public class Main {
 		Utility.initializeAll();
 		Data.readAndWrite();
 		// Data.testData("stuttgart");
-		// new Window();
-		Utility.readQuestionFile();
+		new Window();
+		// Utility.readQuestionFile();
 	}
 
 }

@@ -1,25 +1,15 @@
 package utility;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
 
-import algorithm.Dijkstra;
 import data.Data;
 
 public class Utility {
-	private static int index, differences;
 	private static double startTime = 0;
-	private static File logFile, resultsFile, germanyFmiFile, questionFile, solutionFile;
-	private static Scanner scanner;
-	private static FileWriter logfileWriter, resultsFileWriter;
-
-	private static ArrayList<Integer> resultsArray, solutionsArray;
+	private static File logFile, resultsFile, sourceFile;
+	private static FileWriter logfileWriter;
 
 	public static void startTimer() {
 		startTime = System.nanoTime();
@@ -34,14 +24,13 @@ public class Utility {
 		startTimer();
 		logFile = new File("logfile.txt");
 		resultsFile = new File("results.sol");
-		germanyFmiFile = new File("src/germany.fmi");
-		questionFile = new File("src/germany.que");
-		solutionFile = new File("src/germany.sol");
+		sourceFile = new File("src/germany.fmi");
+		new File("src/germany.que");
+		new File("src/germany.sol");
 		try {
 			logFile.createNewFile();
 			resultsFile.createNewFile();
 			logfileWriter = new FileWriter(logFile);
-			resultsFileWriter = new FileWriter(resultsFile);
 			addLineToFile("This is the logfile for our routeplanner." + System.lineSeparator(), logfileWriter);
 			addEmptyLineToFile(logfileWriter);
 			logfileWriter.flush();
@@ -90,57 +79,7 @@ public class Utility {
 		return logfileWriter;
 	}
 
-	public static File getGermanyFile() {
-		return germanyFmiFile;
-	}
-
-	public static void readQuestionFile() {
-		startTimer();
-		try {
-			scanner = new Scanner(new BufferedReader(new FileReader(questionFile)));
-			while (scanner.hasNext()) {
-				String tempString = scanner.nextLine();
-				addLineToFile(
-						Dijkstra.setSourceAndTarget(Integer.parseInt(tempString.split(" ")[0]),
-								Integer.parseInt(tempString.split(" ")[1])) + System.lineSeparator(),
-						resultsFileWriter);
-			}
-			addLineToFile("Benchmark completed in " + endTimer() + " seconds.", logfileWriter);
-			System.out.println("Benchmark completed.");
-			scanner.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		if (solutionFile != null) {
-			System.out.println("Differences: " + compareQuestionToSolution(resultsFile, solutionFile));
-		}
-	}
-
-	private static int compareQuestionToSolution(File resultsFile, File solutionsFile) {
-		differences = 0;
-		try {
-			Scanner resultsFileScanner = new Scanner(new BufferedReader(new FileReader(resultsFile)));
-			Scanner solutionsFileScanner = new Scanner(new BufferedReader(new FileReader(resultsFile)));
-			while (resultsFileScanner.hasNext()) {
-				resultsArray.add(Integer.parseInt(resultsFileScanner.nextLine()));
-			}
-			while (solutionsFileScanner.hasNext()) {
-				solutionsArray.add(Integer.parseInt(solutionsFileScanner.nextLine()));
-			}
-			if (resultsArray.size() == solutionsArray.size()) {
-				for (int i = 0; i < resultsArray.size(); i++) {
-					if (resultsArray.get(i) - solutionsArray.get(i) != 0) {
-						differences += 1;
-					}
-				}
-			}
-
-			resultsFileScanner.close();
-			solutionsFileScanner.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		return differences;
+	public static File getSourceFile() {
+		return sourceFile;
 	}
 }
