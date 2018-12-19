@@ -1,13 +1,9 @@
-package algorithm;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.Scanner;
-
-import utility.Utility;
 
 public class Benchmark {
 	// kommentar

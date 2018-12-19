@@ -1,8 +1,3 @@
-package algorithm;
-
-import data.Data;
-import utility.Utility;
-
 public class Dijkstra {
 
 	private static int pivotSource;

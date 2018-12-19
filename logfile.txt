@@ -1,4 +1,2 @@
 This is the logfile for our routeplanner.
 
-Reading data from file completed in 40.187704147 seconds.
-Distance from 8371825 to 16743651 is: 648681

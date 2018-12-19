@@ -1,12 +1,7 @@
-package data;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-
-import GUI.Window;
-import utility.Utility;
 
 public class Data {
 

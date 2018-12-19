@@ -1,5 +1,3 @@
-package GUI;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,9 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import data.Data;
-import utility.Utility;
 
 public class Window {
 
@@ -108,7 +103,7 @@ public class Window {
 				int targetIn = Integer.parseInt(target.getText());
 
 				long time1 = System.currentTimeMillis();
-				int tempDistance = algorithm.Dijkstra.setSourceAndTarget(sourceIn, targetIn);
+				int tempDistance = Dijkstra.setSourceAndTarget(sourceIn, targetIn);
 
 				distanceWindow.setText("The Distance between " + sourceIn + " and " + targetIn + " is: " + tempDistance
 						+ "\tCalculated in " + (System.currentTimeMillis() - time1) / 1000 + " seconds");
@@ -259,7 +254,7 @@ public class Window {
 				long time1 = System.currentTimeMillis();
 
 				differenceWindow.setText("The Difference between the .sol file and the calculated Results is "
-						+ algorithm.Benchmark.calculateDifference(map, que, sol) + "\tCalculated in "
+						+ Benchmark.calculateDifference(map, que, sol) + "\tCalculated in "
 						+ (System.currentTimeMillis() - time1) / 1000 + " seconds");
 			}
 		});
