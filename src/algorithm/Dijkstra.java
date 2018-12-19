@@ -215,7 +215,7 @@ public class Dijkstra {
 			if (finished) {
 				for (int ctr = 0; ctr < targets.length; ctr++) {
 					targets[ctr] = distanceArray[targets[ctr]];
-					// System.out.println(targets[ctr]);
+					System.out.println(targets[ctr]);
 				}
 				return targets;
 			}

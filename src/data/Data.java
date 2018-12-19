@@ -143,4 +143,12 @@ public class Data {
 		Window.eventWindow.setText("Data Structures for the map are set.");
 	}
 
+	public static int getNodeAmount() {
+		return nodeAmount;
+	}
+
+	public static int getEdgeAmount() {
+		return edgeAmount;
+	}
+
 }

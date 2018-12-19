@@ -1,7 +1,2 @@
 This is the logfile for our routeplanner.
 
-Reading data from file completed in 41.679337363 seconds.
-Reading questions from file germany.que completed in 0.018567037 seconds.
-Reading solution from file results.sol completed in 2.92982E-4 seconds.
-Source node 8371825 paths calculated in 36.800106618 seconds.
-Source node 8371826 paths calculated in 39.066246913 seconds.

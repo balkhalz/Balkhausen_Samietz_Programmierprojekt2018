@@ -94,6 +94,14 @@ public class Window {
 				} else if (target.getText().equals("")) {
 					eventWindow.setText("Please choose a EndNode before calculating!");
 					return;
+				} else if (Integer.parseInt(source.getText()) > Data.getNodeAmount()
+						|| Integer.parseInt(source.getText()) < 0) {
+					eventWindow.setText("The StartNode you chose is not on the map!");
+					return;
+				} else if (Integer.parseInt(target.getText()) > Data.getEdgeAmount()
+						|| Integer.parseInt(target.getText()) < 0) {
+					eventWindow.setText("The EndNode you chose is not on the map!");
+					return;
 				}
 
 				int sourceIn = Integer.parseInt(source.getText());
