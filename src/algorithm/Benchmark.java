@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import GUI.Window;
 import utility.Utility;
 
 public class Benchmark {
@@ -38,7 +39,7 @@ public class Benchmark {
 			Dijkstra.setPivotSource(questionSources.get(ctr));
 
 			tempQue = Dijkstra.fromPivotSourceToTargets(questionTargets.get(ctr));
-			System.out.println("calculated set nr " + ctr);
+			Window.eventWindow.setText("calculated set nr " + ctr);
 
 			for (int ctr2 = 0; ctr2 < tempQue.length; ctr2++)
 				if (solutions.get(ctr)[ctr2] != tempQue[ctr2])

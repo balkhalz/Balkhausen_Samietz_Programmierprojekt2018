@@ -208,15 +208,14 @@ public class Dijkstra {
 			// falls fuer nur 1 target kein ergebnis gefunden wurde, ist die Suche NICHT
 			// beendet
 			for (int target : targets) {
-				if (distanceArray[target] < distanceArray[priorityQueue[0]]) {
+				if (!minimalDistanceFound[target]) {
 					finished = false;
-					break;
 				}
 			}
 			if (finished) {
 				for (int ctr = 0; ctr < targets.length; ctr++) {
 					targets[ctr] = distanceArray[targets[ctr]];
-					System.out.println(targets[ctr]);
+					// System.out.println(targets[ctr]);
 				}
 				return targets;
 			}
